@@ -4,6 +4,7 @@ import React, {
   useEffect,
   useMemo,
   useState,
+<<<<<<< Updated upstream
 } from "react";
 import styles from "@styles/dashboard.module.css";
 import { CDNImage } from "@components/cdn/image";
@@ -25,6 +26,28 @@ import Typography from "../typography/typography";
 import { calculateTotalBalance } from "../../../services/argentPortfolioService";
 import { useHidePortfolio } from "@hooks/useHidePortfolio";
 
+=======
+} from 'react';
+import styles from '@styles/dashboard.module.css';
+import { CDNImage } from '@components/cdn/image';
+import { useStarkProfile, type Address } from '@starknet-react/core';
+import Skeleton from '@mui/material/Skeleton';
+import trophyIcon from 'public/icons/trophy.svg';
+import xpIcon from 'public/icons/xpBadge.svg';
+import useCreationDate from '@hooks/useCreationDate';
+import shareSrc from 'public/icons/share.svg';
+import theme from '@styles/theme';
+import EyeIcon from '../iconsComponents/icons/eyeIcon';
+import ProfilIcon from '../iconsComponents/icons/profilIcon';
+import Link from 'next/link';
+import SocialMediaActions from '../actions/socialmediaActions';
+import { getTweetLink } from '@utils/browserService';
+import { hexToDecimal } from '@utils/feltService';
+import { TEXT_TYPE } from '@constants/typography';
+import Typography from '../typography/typography';
+import { calculateTotalBalance } from '../../../services/argentPortfolioService';
+import { useWallet } from '@context/WalletProvider';
+>>>>>>> Stashed changes
 const MAX_RETRIES = 1000;
 const RETRY_DELAY = 2000;
 const controller = new AbortController();
@@ -47,14 +70,21 @@ const ProfileCard: FunctionComponent<ProfileCardProps> = ({
   const [userXp, setUserXp] = useState<number>();
   const [totalBalance, setTotalBalance] = useState<number | null>(null);
   const sinceDate = useCreationDate(identity);
-  const formattedAddress = (
-    identity.owner.startsWith("0x") ? identity.owner : `0x${identity.owner}`
-  ) as Address;
+  const { currentAccount } = useWallet();
+
+  const formattedAddress = useMemo(
+    () =>
+      (identity.owner.startsWith('0x')
+        ? identity.owner
+        : `0x${identity.owner}`) as Address,
+    [identity.owner]
+  );
+
   const { data: profileData } = useStarkProfile({ address: formattedAddress });
 
   const rankFormatter = useCallback((rank: number) => {
-    if (rank > 10000) return "+10k";
-    if (rank > 5000) return "+5k";
+    if (rank > 10000) return '+10k';
+    if (rank > 5000) return '+5k';
     return rank;
   }, []);
 
@@ -63,15 +93,30 @@ const ProfileCard: FunctionComponent<ProfileCardProps> = ({
       let attempts = 0;
       while (true) {
         try {
+<<<<<<< Updated upstream
           const balance = await calculateTotalBalance(formattedAddress, "USD", { signal });
+=======
+          const balance = await calculateTotalBalance(formattedAddress, 'USD', {
+            signal,
+          });
+>>>>>>> Stashed changes
           setTotalBalance(balance);
-          return; // Exit if successful
+          return;
         } catch (err) {
           attempts++;
+<<<<<<< Updated upstream
           console.error(`Attempt ${attempts} - Error fetching total balance:`, err);
+=======
+          console.error(
+            `Attempt ${attempts} - Error fetching total balance:`,
+            err
+          );
+>>>>>>> Stashed changes
 
           if (attempts >= MAX_RETRIES) {
-            console.error("Failed to fetch total balance after multiple attempts.");
+            console.error(
+              'Failed to fetch total balance after multiple attempts.'
+            );
           } else {
             await new Promise((resolve) => setTimeout(resolve, RETRY_DELAY));
           }
@@ -79,8 +124,10 @@ const ProfileCard: FunctionComponent<ProfileCardProps> = ({
       }
     };
 
-    fetchTotalBalance();
-  }, [formattedAddress]);
+    if (currentAccount) {
+      fetchTotalBalance();
+    }
+  }, [formattedAddress, currentAccount]);
 
   const computeData = useCallback(() => {
     if (
@@ -105,7 +152,12 @@ const ProfileCard: FunctionComponent<ProfileCardProps> = ({
 
   const tweetShareLink: string = useMemo(() => {
     return `${getTweetLink(
+<<<<<<< Updated upstream
       `Check out${isOwner ? " my " : " "}Starknet Quest Profile at ${window.location.href
+=======
+      `Check out${isOwner ? ' my ' : ' '}Starknet Quest Profile at ${
+        window.location.href
+>>>>>>> Stashed changes
       } #Starknet #StarknetID`
     )}`;
   }, [isOwner]);
@@ -115,28 +167,34 @@ const ProfileCard: FunctionComponent<ProfileCardProps> = ({
       <div className={styles.left}>
         <div className={styles.profile_picture_div}>
           {profileData?.profilePicture ? (
-            <img src={profileData.profilePicture} className="rounded-full" />
+            <img
+              src={profileData.profilePicture}
+              className='rounded-full'
+            />
           ) : (
-            <ProfilIcon width="120" color={theme.palette.secondary.main} />
+            <ProfilIcon
+              width='120'
+              color={theme.palette.secondary.main}
+            />
           )}
         </div>
 
-        <div className="flex flex-col h-full justify-center">
+        <div className='flex flex-col h-full justify-center'>
           <Typography
             type={TEXT_TYPE.BODY_SMALL}
-            color="secondary"
+            color='secondary'
             className={styles.accountCreationDate}
           >
-            {sinceDate ? `${sinceDate}` : ""}
+            {sinceDate ? `${sinceDate}` : ''}
           </Typography>
           <Typography
             type={TEXT_TYPE.H2}
             className={`${styles.profile_name} mt-2`}
           >
-            {identity.domain?.domain || "Unknown Domain"}
+            {identity.domain?.domain || 'Unknown Domain'}
           </Typography>
           <div className={styles.address_div}>
-            <div className="flex items-center gap-2">
+            <div className='flex items-center gap-2'>
               <Typography
                 type={TEXT_TYPE.BODY_SMALL}
                 className={`${styles.wallet_amount} font-extrabold`}
@@ -144,7 +202,11 @@ const ProfileCard: FunctionComponent<ProfileCardProps> = ({
                 {totalBalance !== null ? (
                   hidePortfolio ? "******" : `$${totalBalance.toFixed(2)}`
                 ) : (
-                  <Skeleton variant="text" width={60} height={30} />
+                  <Skeleton
+                    variant='text'
+                    width={60}
+                    height={30}
+                  />
                 )}
               </Typography>
               <div onClick={() => setHidePortfolio(!hidePortfolio)} className="cursor-pointer">
@@ -152,16 +214,20 @@ const ProfileCard: FunctionComponent<ProfileCardProps> = ({
               </div>
             </div>
           </div>
-          <div className="flex sm:hidden justify-center py-4">
+          <div className='flex sm:hidden justify-center py-4'>
             <SocialMediaActions identity={identity} />
             {tweetShareLink && (
-              <Link href={tweetShareLink} target="_blank" rel="noreferrer">
+              <Link
+                href={tweetShareLink}
+                target='_blank'
+                rel='noreferrer'
+              >
                 <div className={styles.right_share_button}>
                   <CDNImage
                     src={shareSrc}
                     width={20}
                     height={20}
-                    alt="share-icon"
+                    alt='share-icon'
                   />
                   <Typography type={TEXT_TYPE.BODY_DEFAULT}>Share</Typography>
                 </div>
@@ -171,18 +237,22 @@ const ProfileCard: FunctionComponent<ProfileCardProps> = ({
         </div>
       </div>
       <div className={styles.right}>
-        <div className="hidden sm:flex">
+        <div className='hidden sm:flex'>
           <div className={styles.right_top}>
             <div className={styles.right_socials}>
               <SocialMediaActions identity={identity} />
               {tweetShareLink && (
-                <Link href={tweetShareLink} target="_blank" rel="noreferrer">
+                <Link
+                  href={tweetShareLink}
+                  target='_blank'
+                  rel='noreferrer'
+                >
                   <div className={styles.right_share_button}>
                     <CDNImage
                       src={shareSrc}
                       width={20}
                       height={20}
-                      alt="share-icon"
+                      alt='share-icon'
                     />
                     <Typography type={TEXT_TYPE.BODY_DEFAULT}>Share</Typography>
                   </div>
@@ -200,7 +270,7 @@ const ProfileCard: FunctionComponent<ProfileCardProps> = ({
                 priority
                 width={25}
                 height={25}
-                alt="trophy icon"
+                alt='trophy icon'
               />
               <Typography
                 type={TEXT_TYPE.BODY_SMALL}
@@ -208,7 +278,7 @@ const ProfileCard: FunctionComponent<ProfileCardProps> = ({
               >
                 {leaderboardData.position
                   ? rankFormatter(leaderboardData.position)
-                  : "NA"}
+                  : 'NA'}
               </Typography>
             </div>
           )}
@@ -219,13 +289,13 @@ const ProfileCard: FunctionComponent<ProfileCardProps> = ({
                 priority
                 width={30}
                 height={30}
-                alt="xp badge"
+                alt='xp badge'
               />
               <Typography
                 type={TEXT_TYPE.BODY_SMALL}
                 className={styles.statsText}
               >
-                {userXp ?? "0"}
+                {userXp ?? '0'}
               </Typography>
             </div>
           )}
