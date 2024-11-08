@@ -4,7 +4,6 @@ import React, {
   useEffect,
   useMemo,
   useState,
-<<<<<<< Updated upstream
 } from "react";
 import styles from "@styles/dashboard.module.css";
 import { CDNImage } from "@components/cdn/image";
@@ -25,29 +24,8 @@ import { TEXT_TYPE } from "@constants/typography";
 import Typography from "../typography/typography";
 import { calculateTotalBalance } from "../../../services/argentPortfolioService";
 import { useHidePortfolio } from "@hooks/useHidePortfolio";
+import { useWallet } from "@context/WalletProvider";
 
-=======
-} from 'react';
-import styles from '@styles/dashboard.module.css';
-import { CDNImage } from '@components/cdn/image';
-import { useStarkProfile, type Address } from '@starknet-react/core';
-import Skeleton from '@mui/material/Skeleton';
-import trophyIcon from 'public/icons/trophy.svg';
-import xpIcon from 'public/icons/xpBadge.svg';
-import useCreationDate from '@hooks/useCreationDate';
-import shareSrc from 'public/icons/share.svg';
-import theme from '@styles/theme';
-import EyeIcon from '../iconsComponents/icons/eyeIcon';
-import ProfilIcon from '../iconsComponents/icons/profilIcon';
-import Link from 'next/link';
-import SocialMediaActions from '../actions/socialmediaActions';
-import { getTweetLink } from '@utils/browserService';
-import { hexToDecimal } from '@utils/feltService';
-import { TEXT_TYPE } from '@constants/typography';
-import Typography from '../typography/typography';
-import { calculateTotalBalance } from '../../../services/argentPortfolioService';
-import { useWallet } from '@context/WalletProvider';
->>>>>>> Stashed changes
 const MAX_RETRIES = 1000;
 const RETRY_DELAY = 2000;
 const controller = new AbortController();
@@ -93,25 +71,12 @@ const ProfileCard: FunctionComponent<ProfileCardProps> = ({
       let attempts = 0;
       while (true) {
         try {
-<<<<<<< Updated upstream
           const balance = await calculateTotalBalance(formattedAddress, "USD", { signal });
-=======
-          const balance = await calculateTotalBalance(formattedAddress, 'USD', {
-            signal,
-          });
->>>>>>> Stashed changes
           setTotalBalance(balance);
           return;
         } catch (err) {
           attempts++;
-<<<<<<< Updated upstream
           console.error(`Attempt ${attempts} - Error fetching total balance:`, err);
-=======
-          console.error(
-            `Attempt ${attempts} - Error fetching total balance:`,
-            err
-          );
->>>>>>> Stashed changes
 
           if (attempts >= MAX_RETRIES) {
             console.error(
@@ -152,12 +117,7 @@ const ProfileCard: FunctionComponent<ProfileCardProps> = ({
 
   const tweetShareLink: string = useMemo(() => {
     return `${getTweetLink(
-<<<<<<< Updated upstream
       `Check out${isOwner ? " my " : " "}Starknet Quest Profile at ${window.location.href
-=======
-      `Check out${isOwner ? ' my ' : ' '}Starknet Quest Profile at ${
-        window.location.href
->>>>>>> Stashed changes
       } #Starknet #StarknetID`
     )}`;
   }, [isOwner]);
