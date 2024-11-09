@@ -52,7 +52,7 @@ const ProfileCard: FunctionComponent<ProfileCardProps> = ({
 
   const formattedAddress = useMemo(
     () =>
-      (identity.owner.startsWith('0x')
+      (identity.owner.startsWith("0x")
         ? identity.owner
         : `0x${identity.owner}`) as Address,
     [identity.owner]
@@ -61,8 +61,8 @@ const ProfileCard: FunctionComponent<ProfileCardProps> = ({
   const { data: profileData } = useStarkProfile({ address: formattedAddress });
 
   const rankFormatter = useCallback((rank: number) => {
-    if (rank > 10000) return '+10k';
-    if (rank > 5000) return '+5k';
+    if (rank > 10000) return "+10k";
+    if (rank > 5000) return "+5k";
     return rank;
   }, []);
 
@@ -71,16 +71,21 @@ const ProfileCard: FunctionComponent<ProfileCardProps> = ({
       let attempts = 0;
       while (true) {
         try {
-          const balance = await calculateTotalBalance(formattedAddress, "USD", { signal });
+          const balance = await calculateTotalBalance(formattedAddress, "USD", {
+            signal,
+          });
           setTotalBalance(balance);
           return;
         } catch (err) {
           attempts++;
-          console.error(`Attempt ${attempts} - Error fetching total balance:`, err);
+          console.error(
+            `Attempt ${attempts} - Error fetching total balance:`,
+            err
+          );
 
           if (attempts >= MAX_RETRIES) {
             console.error(
-              'Failed to fetch total balance after multiple attempts.'
+              "Failed to fetch total balance after multiple attempts."
             );
           } else {
             await new Promise((resolve) => setTimeout(resolve, RETRY_DELAY));
@@ -117,7 +122,8 @@ const ProfileCard: FunctionComponent<ProfileCardProps> = ({
 
   const tweetShareLink: string = useMemo(() => {
     return `${getTweetLink(
-      `Check out${isOwner ? " my " : " "}Starknet Quest Profile at ${window.location.href
+      `Check out${isOwner ? " my " : " "}Starknet Quest Profile at ${
+        window.location.href
       } #Starknet #StarknetID`
     )}`;
   }, [isOwner]);
@@ -145,13 +151,13 @@ const ProfileCard: FunctionComponent<ProfileCardProps> = ({
             color='secondary'
             className={styles.accountCreationDate}
           >
-            {sinceDate ? `${sinceDate}` : ''}
+            {sinceDate ? `${sinceDate}` : ""}
           </Typography>
           <Typography
             type={TEXT_TYPE.H2}
             className={`${styles.profile_name} mt-2`}
           >
-            {newAddress || identity.domain?.domain || 'Unknown Domain'}
+            {newAddress || identity.domain?.domain || "Unknown Domain"}
           </Typography>
           <div className={styles.address_div}>
             <div className='flex items-center gap-2'>
@@ -160,7 +166,11 @@ const ProfileCard: FunctionComponent<ProfileCardProps> = ({
                 className={`${styles.wallet_amount} font-extrabold`}
               >
                 {totalBalance !== null ? (
-                  hidePortfolio ? "******" : `$${totalBalance.toFixed(2)}`
+                  hidePortfolio ? (
+                    "******"
+                  ) : (
+                    `$${totalBalance.toFixed(2)}`
+                  )
                 ) : (
                   <Skeleton
                     variant='text'
@@ -169,7 +179,10 @@ const ProfileCard: FunctionComponent<ProfileCardProps> = ({
                   />
                 )}
               </Typography>
-              <div onClick={() => setHidePortfolio(!hidePortfolio)} className="cursor-pointer">
+              <div
+                onClick={() => setHidePortfolio(!hidePortfolio)}
+                className='cursor-pointer'
+              >
                 {hidePortfolio ? <EyeIconSlashed /> : <EyeIcon />}
               </div>
             </div>
@@ -238,7 +251,7 @@ const ProfileCard: FunctionComponent<ProfileCardProps> = ({
               >
                 {leaderboardData.position
                   ? rankFormatter(leaderboardData.position)
-                  : 'NA'}
+                  : "NA"}
               </Typography>
             </div>
           )}
@@ -255,7 +268,7 @@ const ProfileCard: FunctionComponent<ProfileCardProps> = ({
                 type={TEXT_TYPE.BODY_SMALL}
                 className={styles.statsText}
               >
-                {userXp ?? '0'}
+                {userXp ?? "0"}
               </Typography>
             </div>
           )}

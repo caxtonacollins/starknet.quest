@@ -43,9 +43,7 @@ const WalletButton: FunctionComponent<WalletButtonProps> = ({
   const [hovering, setHovering] = useState<boolean>(false);
   const [unfocus, setUnfocus] = useState<boolean>(false);
   const network = currentNetwork === "TESTNET" ? "testnet" : "mainnet";
-  const isWebWallet =
-    (connector as Connector)?.id === "argentWebWallet";
-
+  const isWebWallet = (connector as Connector)?.id === "argentWebWallet";
 
   const buttonName = useMemo(
     () =>
@@ -123,7 +121,7 @@ const WalletButton: FunctionComponent<WalletButtonProps> = ({
           onClick={address ? () => setShowWallet(!showWallet) : () => connect()}
         >
           <>
-            <div className="flex items-center justify-between">
+            <div className='flex items-center justify-between'>
               <div className={styles.buttonTextSection}>
                 <Typography
                   type={TEXT_TYPE.BODY_DEFAULT}
@@ -132,7 +130,10 @@ const WalletButton: FunctionComponent<WalletButtonProps> = ({
                   {buttonName}
                 </Typography>
                 {txLoading ? (
-                  <CircularProgress color="secondary" size={24} />
+                  <CircularProgress
+                    color='secondary'
+                    size={24}
+                  />
                 ) : null}
                 <div className={styles.buttonSeparator} />
               </div>
@@ -141,7 +142,7 @@ const WalletButton: FunctionComponent<WalletButtonProps> = ({
                   <Avatar address={address} />
                 ) : (
                   <ProfilIcon
-                    width="32"
+                    width='32'
                     color={theme.palette.background.default}
                   />
                 )}
@@ -149,50 +150,50 @@ const WalletButton: FunctionComponent<WalletButtonProps> = ({
             </div>
             {showWallet ? (
               <div className={styles.walletMenu}>
-                <Link href="/leaderboard">
+                <Link href='/leaderboard'>
                   <button>
-                    <TrophyIcon width="24" />
+                    <TrophyIcon width='24' />
                     <Typography
                       type={TEXT_TYPE.BUTTON_SMALL}
-                      color="secondary500"
+                      color='secondary500'
                     >
                       Leaderboard
                     </Typography>
                   </button>
                 </Link>
-                <div className="flex items-center">
+                <div className='flex items-center'>
                   <CopyAddress
                     address={address ?? ""}
-                    iconSize="24"
+                    iconSize='24'
                     className={styles.copyButton}
                     wallet={true}
                   />
                 </div>
                 {isWebWallet && (
                   <button onClick={handleOpenWebWallet}>
-                    <ArgentIcon width="24" />
+                    <ArgentIcon width='24' />
                     <Typography
                       type={TEXT_TYPE.BUTTON_SMALL}
-                      color="secondary500"
+                      color='secondary500'
                     >
                       Web wallet Dashboard
                     </Typography>
                   </button>
                 )}
                 <button onClick={handleWalletChange}>
-                  <WalletIcon width="24" />
+                  <WalletIcon width='24' />
                   <Typography
                     type={TEXT_TYPE.BUTTON_SMALL}
-                    color="secondary500"
+                    color='secondary500'
                   >
                     Change Wallet
                   </Typography>
                 </button>
                 <button onClick={handleDisconnect}>
-                  <LogoutIcon width="24" />
+                  <LogoutIcon width='24' />
                   <Typography
                     type={TEXT_TYPE.BUTTON_SMALL}
-                    color="secondary500"
+                    color='secondary500'
                   >
                     Disconnect
                   </Typography>

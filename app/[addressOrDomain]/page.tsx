@@ -1,52 +1,52 @@
-'use client';
-import React, { useCallback, useContext, useEffect, useState } from 'react';
-import styles from '@styles/dashboard.module.css';
-import ProfileCard from '@components/UI/profileCard/profileCard';
+"use client";
+import React, { useCallback, useContext, useEffect, useState } from "react";
+import styles from "@styles/dashboard.module.css";
+import ProfileCard from "@components/UI/profileCard/profileCard";
 import {
   fetchLeaderboardRankings,
   fetchLeaderboardToppers,
   getBoosts,
   getCompletedQuests,
-} from '@services/apiService';
-import { useAccount } from '@starknet-react/core';
-import Blur from '@components/shapes/blur';
-import { utils } from 'starknetid.js';
-import { StarknetIdJsContext } from '@context/StarknetIdJsProvider';
-import { hexToDecimal, tokenToDecimal } from '@utils/feltService';
-import { isHexString, minifyAddress } from '@utils/stringService';
-import ProfileCardSkeleton from '@components/skeletons/profileCardSkeleton';
-import { getDataFromId } from '@services/starknetIdService';
-import { usePathname, useRouter } from 'next/navigation';
-import ErrorScreen from '@components/UI/screens/errorScreen';
+} from "@services/apiService";
+import { useAccount } from "@starknet-react/core";
+import Blur from "@components/shapes/blur";
+import { utils } from "starknetid.js";
+import { StarknetIdJsContext } from "@context/StarknetIdJsProvider";
+import { hexToDecimal, tokenToDecimal } from "@utils/feltService";
+import { isHexString, minifyAddress } from "@utils/stringService";
+import ProfileCardSkeleton from "@components/skeletons/profileCardSkeleton";
+import { getDataFromId } from "@services/starknetIdService";
+import { usePathname, useRouter } from "next/navigation";
+import ErrorScreen from "@components/UI/screens/errorScreen";
 import {
   ArgentDappMap,
   ArgentTokenMap,
   ArgentUserDapp,
   ArgentUserToken,
   CompletedQuests,
-} from '../../types/backTypes';
-import QuestSkeleton from '@components/skeletons/questsSkeleton';
-import QuestCardCustomised from '@components/dashboard/CustomisedQuestCard';
-import QuestStyles from '@styles/Home.module.css';
-import { Tab, Tabs } from '@mui/material';
-import { MILLISECONDS_PER_WEEK } from '@constants/common';
-import useBoost from '@hooks/useBoost';
-import BoostCard from '@components/quest-boost/boostCard';
-import Typography from '@components/UI/typography/typography';
-import { TEXT_TYPE } from '@constants/typography';
-import { a11yProps } from '@components/UI/tabs/a11y';
-import { CustomTabPanel } from '@components/UI/tabs/customTab';
-import SuggestedQuests from '@components/dashboard/SuggestedQuests';
-import PortfolioSummary from '@components/dashboard/PortfolioSummary';
-import { useNotification } from '@context/NotificationProvider';
+} from "../../types/backTypes";
+import QuestSkeleton from "@components/skeletons/questsSkeleton";
+import QuestCardCustomised from "@components/dashboard/CustomisedQuestCard";
+import QuestStyles from "@styles/Home.module.css";
+import { Tab, Tabs } from "@mui/material";
+import { MILLISECONDS_PER_WEEK } from "@constants/common";
+import useBoost from "@hooks/useBoost";
+import BoostCard from "@components/quest-boost/boostCard";
+import Typography from "@components/UI/typography/typography";
+import { TEXT_TYPE } from "@constants/typography";
+import { a11yProps } from "@components/UI/tabs/a11y";
+import { CustomTabPanel } from "@components/UI/tabs/customTab";
+import SuggestedQuests from "@components/dashboard/SuggestedQuests";
+import PortfolioSummary from "@components/dashboard/PortfolioSummary";
+import { useNotification } from "@context/NotificationProvider";
 import {
   calculateTokenPrice,
   fetchDapps,
   fetchTokens,
   fetchUserDapps,
   fetchUserTokens,
-} from '@services/argentPortfolioService';
-import PortfolioSummarySkeleton from '@components/skeletons/portfolioSummarySkeleton';
+} from "@services/argentPortfolioService";
+import PortfolioSummarySkeleton from "@components/skeletons/portfolioSummarySkeleton";
 
 type AddressOrDomainProps = {
   params: {
@@ -112,10 +112,10 @@ export default function Page({ params }: AddressOrDomainProps) {
       try {
         if (!addr) return;
         const res = await getCompletedQuests(addr);
-        if (!res || 'error' in res) return;
+        if (!res || "error" in res) return;
         setCompletedQuests(res);
       } catch (err) {
-        console.log('Error while fetching quests', err);
+        console.log("Error while fetching quests", err);
       }
     },
     [address, identity]
@@ -154,7 +154,7 @@ export default function Page({ params }: AddressOrDomainProps) {
         setClaimableQuests(filteredBoosts);
       }
     } catch (err) {
-      console.log('Error while fetching boosts', err);
+      console.log("Error while fetching boosts", err);
     }
   }, [address, completedQuests]);
 
@@ -169,7 +169,7 @@ export default function Page({ params }: AddressOrDomainProps) {
         addr: hexToDecimal(addr),
         page_size: 10,
         shift: 0,
-        duration: 'all',
+        duration: "all",
       });
       if (!res) return;
       setUserRanking(res);
@@ -182,7 +182,7 @@ export default function Page({ params }: AddressOrDomainProps) {
       if (!addr) return;
       const res = await fetchLeaderboardToppers({
         addr: hexToDecimal(addr),
-        duration: 'all',
+        duration: "all",
       });
       if (!res) return;
       setLeaderboardData(res);
@@ -213,7 +213,7 @@ export default function Page({ params }: AddressOrDomainProps) {
     // Process user tokens in parallel
     const userTokenPromises = userTokens.map(async (token) => {
       const tokenInfo = tokens[token.tokenAddress];
-      if (!tokenInfo || token.tokenBalance === '0') return null;
+      if (!tokenInfo || token.tokenBalance === "0") return null;
 
       // Skip protocol tokens (like LPT pair tokens, staking, etc.)
       if (tokenInfo.dappId) {
@@ -224,11 +224,11 @@ export default function Page({ params }: AddressOrDomainProps) {
         const value = await calculateTokenPrice(
           token.tokenAddress,
           tokenToDecimal(token.tokenBalance, tokenInfo.decimals),
-          'USD'
+          "USD"
         );
         return {
           value,
-          symbol: tokenInfo.symbol || 'Unknown',
+          symbol: tokenInfo.symbol || "Unknown",
           isProtocolToken: !!tokenInfo.dappId,
         };
       } catch (err) {
@@ -258,18 +258,18 @@ export default function Page({ params }: AddressOrDomainProps) {
     const balancePromises = dappBalances.map(
       async ({ tokenAddress, balance, dappId }) => {
         const tokenInfo = tokens[tokenAddress];
-        if (!tokenInfo || balance === '0') return null;
+        if (!tokenInfo || balance === "0") return null;
 
         try {
           const value = await calculateTokenPrice(
             tokenAddress,
             tokenToDecimal(balance, tokenInfo.decimals),
-            'USD'
+            "USD"
           );
 
           return {
             value,
-            symbol: tokenInfo.symbol || 'Unknown',
+            symbol: tokenInfo.symbol || "Unknown",
             isProtocolToken: !!tokenInfo.dappId,
           };
         } catch (err) {
@@ -305,8 +305,8 @@ export default function Page({ params }: AddressOrDomainProps) {
       .map(([symbol, value]) => ({
         itemLabel: symbol,
         itemValue: ((value / totalValue) * 100).toFixed(2),
-        itemValueSymbol: '%',
-        color: '', // Colors will be assigned later
+        itemValueSymbol: "%",
+        color: "", // Colors will be assigned later
       }));
 
     // Handle "Others" category if needed
@@ -316,15 +316,15 @@ export default function Page({ params }: AddressOrDomainProps) {
         .reduce((sum, asset) => sum + parseFloat(asset.itemValue), 0);
       sortedAssets.splice(4);
       sortedAssets.push({
-        itemLabel: 'Others',
+        itemLabel: "Others",
         itemValue: others.toFixed(2),
-        itemValueSymbol: '%',
-        color: '',
+        itemValueSymbol: "%",
+        color: "",
       });
     }
 
     // Assign colors
-    const colors = ['#1E2097', '#637DEB', '#2775CA', '#5CE3FE', '#F4FAFF'];
+    const colors = ["#1E2097", "#637DEB", "#2775CA", "#5CE3FE", "#F4FAFF"];
     sortedAssets.forEach((asset, index) => {
       asset.color = colors[index % colors.length]; // Use modulo to recycle colors if needed
     });
@@ -341,7 +341,7 @@ export default function Page({ params }: AddressOrDomainProps) {
       const { dapps, tokens, userTokens, userDapps } = data;
       try {
         if (!tokens || !userTokens || !dapps || !userDapps) {
-          console.warn('Missing required data for portfolio calculation');
+          console.warn("Missing required data for portfolio calculation");
           return;
         }
         const assets = await calculateAssetPercentages(
@@ -352,8 +352,8 @@ export default function Page({ params }: AddressOrDomainProps) {
         );
         setPortfolioAssets(assets);
       } catch (error) {
-        showNotification('Error while fetching portfolio assets', 'error');
-        console.log('Error while fetching portfolio assets', error);
+        showNotification("Error while fetching portfolio assets", "error");
+        console.log("Error while fetching portfolio assets", error);
       }
     },
     []
@@ -401,7 +401,7 @@ export default function Page({ params }: AddressOrDomainProps) {
           debt.tokenBalance.toString(),
           tokens[debt.tokenAddress].decimals
         ),
-        'USD'
+        "USD"
       );
 
       protocolsMap[debt.dappId].itemValue = value.toFixed(2);
@@ -416,12 +416,12 @@ export default function Page({ params }: AddressOrDomainProps) {
   ) => {
     for await (const token of userTokens) {
       const tokenInfo = tokens[token.tokenAddress];
-      if (tokenInfo.dappId && token.tokenBalance != '0') {
+      if (tokenInfo.dappId && token.tokenBalance != "0") {
         let itemValue = 0;
         const currentTokenBalance = await calculateTokenPrice(
           token.tokenAddress,
           tokenToDecimal(token.tokenBalance, tokenInfo.decimals),
-          'USD'
+          "USD"
         );
 
         if (protocolsMap[tokenInfo.dappId]?.itemValue) {
@@ -433,9 +433,9 @@ export default function Page({ params }: AddressOrDomainProps) {
         }
 
         protocolsMap[tokenInfo.dappId] = {
-          color: '',
+          color: "",
           itemLabel: dapps[tokenInfo.dappId].name,
-          itemValueSymbol: '$',
+          itemValueSymbol: "$",
           itemValue: itemValue.toFixed(2),
         };
       }
@@ -465,15 +465,15 @@ export default function Page({ params }: AddressOrDomainProps) {
               position.totalBalances[tokenAddress],
               tokens[tokenAddress].decimals
             ),
-            'USD'
+            "USD"
           );
         }
       }
 
       protocolsMap[userDapp.dappId] = {
-        color: '',
+        color: "",
         itemLabel: dapps[userDapp.dappId].name,
-        itemValueSymbol: '$',
+        itemValueSymbol: "$",
         itemValue: protocolBalance.toFixed(2),
       };
     }
@@ -492,25 +492,25 @@ export default function Page({ params }: AddressOrDomainProps) {
       return;
     }
     sortedProtocols.push({
-      itemLabel: 'Others',
+      itemLabel: "Others",
       itemValue: otherProtocols
         .reduce(
           (valueSum, protocol) => valueSum + Number(protocol.itemValue),
           0
         )
         .toFixed(2),
-      itemValueSymbol: '$',
-      color: '',
+      itemValueSymbol: "$",
+      color: "",
     });
   };
 
   const assignProtocolColors = (sortedProtocols: ChartItem[]) => {
     const portfolioProtocolColors = [
-      '#278015',
-      '#23F51F',
-      '#DEFE5C',
-      '#9EFABB',
-      '#F4FAFF',
+      "#278015",
+      "#23F51F",
+      "#DEFE5C",
+      "#9EFABB",
+      "#F4FAFF",
     ];
     sortedProtocols.forEach((protocol, index) => {
       protocol.color = portfolioProtocolColors[index];
@@ -541,10 +541,10 @@ export default function Page({ params }: AddressOrDomainProps) {
         setPortfolioProtocols(sortedProtocols);
       } catch (error) {
         showNotification(
-          'Error while calculating address portfolio stats',
-          'error'
+          "Error while calculating address portfolio stats",
+          "error"
         );
-        console.log('Error while calculating address portfolio stats', error);
+        console.log("Error while calculating address portfolio stats", error);
       }
     },
     [address]
@@ -576,13 +576,13 @@ export default function Page({ params }: AddressOrDomainProps) {
           fetchPortfolioAssets(data),
         ]);
       } catch (error) {
-        console.log('Error while fetching address portfolio', error);
-        if (error instanceof Error && error.name === 'AbortError') {
+        console.log("Error while fetching address portfolio", error);
+        if (error instanceof Error && error.name === "AbortError") {
           // Do not show notification for AbortError
           return;
         }
 
-        showNotification('Error while fetching address portfolio', 'error');
+        showNotification("Error while fetching address portfolio", "error");
       } finally {
         setLoadingProtocols(false);
       }
@@ -609,8 +609,8 @@ export default function Page({ params }: AddressOrDomainProps) {
 
   useEffect(() => {
     if (
-      typeof addressOrDomain === 'string' &&
-      addressOrDomain?.toString().toLowerCase().endsWith('.stark')
+      typeof addressOrDomain === "string" &&
+      addressOrDomain?.toString().toLowerCase().endsWith(".stark")
     ) {
       if (
         !utils.isBraavosSubdomain(addressOrDomain) &&
@@ -641,7 +641,7 @@ export default function Page({ params }: AddressOrDomainProps) {
           ?.getAddressFromStarkName(addressOrDomain)
           .then((addr) => {
             setIdentity({
-              id: '0',
+              id: "0",
               owner: addr,
               domain: { domain: addressOrDomain },
               main: false,
@@ -654,7 +654,7 @@ export default function Page({ params }: AddressOrDomainProps) {
           });
       }
     } else if (
-      typeof addressOrDomain === 'string' &&
+      typeof addressOrDomain === "string" &&
       isHexString(addressOrDomain)
     ) {
       starknetIdNavigator
@@ -684,7 +684,7 @@ export default function Page({ params }: AddressOrDomainProps) {
                 });
             } else {
               setIdentity({
-                id: '0',
+                id: "0",
                 owner: addressOrDomain,
                 domain: { domain: name },
                 main: false,
@@ -695,7 +695,7 @@ export default function Page({ params }: AddressOrDomainProps) {
             }
           } else {
             setIdentity({
-              id: '0',
+              id: "0",
               owner: addressOrDomain,
               domain: { domain: minifyAddress(addressOrDomain) },
               main: false,
@@ -706,7 +706,7 @@ export default function Page({ params }: AddressOrDomainProps) {
         })
         .catch(() => {
           setIdentity({
-            id: '0',
+            id: "0",
             owner: addressOrDomain,
             domain: { domain: minifyAddress(addressOrDomain) },
             main: false,
@@ -725,7 +725,7 @@ export default function Page({ params }: AddressOrDomainProps) {
       <ErrorScreen
         errorMessage='Profile or Page not found'
         buttonText='Go back to quests'
-        onClick={() => router.push('/')}
+        onClick={() => router.push("/")}
       />
     );
   }
@@ -786,7 +786,7 @@ export default function Page({ params }: AddressOrDomainProps) {
         <div>
           <Tabs
             style={{
-              borderBottom: '0.5px solid rgba(224, 224, 224, 0.3)',
+              borderBottom: "0.5px solid rgba(224, 224, 224, 0.3)",
             }}
             className='pb-6'
             value={tabIndex}
@@ -797,13 +797,13 @@ export default function Page({ params }: AddressOrDomainProps) {
             <Tab
               disableRipple
               sx={{
-                borderRadius: '10px',
-                padding: '0px 12px 0px 12px',
-                textTransform: 'none',
-                fontWeight: '600',
-                fontSize: '12px',
-                fontFamily: 'Sora',
-                minHeight: '32px',
+                borderRadius: "10px",
+                padding: "0px 12px 0px 12px",
+                textTransform: "none",
+                fontWeight: "600",
+                fontSize: "12px",
+                fontFamily: "Sora",
+                minHeight: "32px",
               }}
               label={`Completed (${completedQuests.length})`}
               {...a11yProps(0)}
@@ -812,13 +812,13 @@ export default function Page({ params }: AddressOrDomainProps) {
               <Tab
                 disableRipple
                 sx={{
-                  borderRadius: '10px',
-                  padding: '0px 12px 0px 12px',
-                  textTransform: 'none',
-                  fontWeight: '600',
-                  fontSize: '12px',
-                  fontFamily: 'Sora',
-                  minHeight: '32px',
+                  borderRadius: "10px",
+                  padding: "0px 12px 0px 12px",
+                  textTransform: "none",
+                  fontWeight: "600",
+                  fontSize: "12px",
+                  fontFamily: "Sora",
+                  minHeight: "32px",
                 }}
                 label={`To claim (${claimableQuests})`}
                 {...a11yProps(1)}

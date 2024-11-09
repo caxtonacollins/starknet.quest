@@ -1,61 +1,7 @@
-// 'use client';
+"use client";
 
-// import { useRouter } from 'next/router';
-// import React, { createContext, useContext, useEffect, useState } from 'react';
-
-// type WalletContextType = {
-//   newAddress: string | null;
-//   setNewAddress: (account: string | null) => void;
-//   newURLParams: string | undefined;
-//   setNewURLParams: (account: string) => void;
-// };
-
-// const WalletContext = createContext<WalletContextType | undefined>(undefined);
-
-// export const WalletProvider: React.FC<{ children: React.ReactNode }> = ({
-//   children,
-// }) => {
-//   const router = useRouter();
-//   const [newAddress, setNewAddress] = useState<string | null>(null);
-//   const [newURLParams, setNewURLParams] = useState<string>();
-
-//   useEffect(() => {
-//     const updateUrl = (newURLParams: string) => {
-//       const queryParams = new URLSearchParams(window.location.search);
-//       queryParams.set('walletAddress', newURLParams);
-//       const newUrl = `${window.location.pathname}?${queryParams.toString()}`;
-//       router.replace(newUrl);
-//     };
-
-//     if (newURLParams) updateUrl(newURLParams);
-
-//   }, [newURLParams, newAddress]);
-
-//   return (
-//     <WalletContext.Provider
-//       value={{ newAddress, setNewAddress, newURLParams, setNewURLParams }}
-//     >
-//       {children}
-//     </WalletContext.Provider>
-//   );
-// };
-
-// export const useWallet = () => {
-//   const context = useContext(WalletContext);
-//   if (!context) {
-//     throw new Error('useWallet must be used within a WalletProvider');
-//   }
-//   return context;
-// };
-
-
-
-
-
-'use client';
-
-import { useRouter } from 'next/navigation';
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import { useRouter } from "next/navigation";
+import React, { createContext, useContext, useEffect, useState } from "react";
 
 type WalletContextType = {
   newAddress: string | null;
@@ -70,7 +16,7 @@ export const WalletProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
   const [newAddress, setNewAddress] = useState<string | null>(null);
-  const [newURLParams, setNewURLParams] = useState<string>('');
+  const [newURLParams, setNewURLParams] = useState<string>("");
   const router = useRouter();
   const [isMounted, setIsMounted] = useState(false);
 
@@ -103,7 +49,7 @@ export const WalletProvider: React.FC<{ children: React.ReactNode }> = ({
 export const useWallet = () => {
   const context = useContext(WalletContext);
   if (!context) {
-    throw new Error('useWallet must be used within a WalletProvider');
+    throw new Error("useWallet must be used within a WalletProvider");
   }
   return context;
 };

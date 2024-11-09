@@ -1,37 +1,37 @@
-'use client';
+"use client";
 
-import Link from 'next/link';
-import React, { useState, useEffect, FunctionComponent } from 'react';
-import styles from '@styles/components/navbar.module.css';
-import Button from './button';
+import Link from "next/link";
+import React, { useState, useEffect, FunctionComponent } from "react";
+import styles from "@styles/components/navbar.module.css";
+import Button from "./button";
 import {
   useConnect,
   useAccount,
   useDisconnect,
   Connector,
-} from '@starknet-react/core';
-import ModalMessage from './modalMessage';
-import { useDisplayName } from '@hooks/displayName.tsx';
-import { constants } from 'starknet';
-import { usePathname } from 'next/navigation';
-import theme from '@styles/theme';
-import { FaDiscord, FaTwitter } from 'react-icons/fa';
-import WalletButton from '@components/navbar/walletButton';
-import NotificationIcon from '@components/UI/iconsComponents/icons/notificationIcon';
-import ModalNotifications from '@components/UI/notifications/modalNotifications';
-import { useNotificationManager } from '@hooks/useNotificationManager';
-import NotificationUnreadIcon from '@components/UI/iconsComponents/icons/notificationIconUnread';
-import { getPendingBoostClaims } from '@services/apiService';
-import { hexToDecimal } from '@utils/feltService';
-import { getCurrentNetwork } from '@utils/network';
-import { availableConnectors } from '@app/provider';
-import { useStarknetkitConnectModal } from 'starknetkit';
-import Image from 'next/image';
-import { PendingBoostClaim } from 'types/backTypes';
-import Typography from './typography/typography';
-import { TEXT_TYPE } from '@constants/typography';
-import Hamburger from './hamburger';
-import { useWallet } from '@context/WalletProvider';
+} from "@starknet-react/core";
+import ModalMessage from "./modalMessage";
+import { useDisplayName } from "@hooks/displayName.tsx";
+import { constants } from "starknet";
+import { usePathname } from "next/navigation";
+import theme from "@styles/theme";
+import { FaDiscord, FaTwitter } from "react-icons/fa";
+import WalletButton from "@components/navbar/walletButton";
+import NotificationIcon from "@components/UI/iconsComponents/icons/notificationIcon";
+import ModalNotifications from "@components/UI/notifications/modalNotifications";
+import { useNotificationManager } from "@hooks/useNotificationManager";
+import NotificationUnreadIcon from "@components/UI/iconsComponents/icons/notificationIconUnread";
+import { getPendingBoostClaims } from "@services/apiService";
+import { hexToDecimal } from "@utils/feltService";
+import { getCurrentNetwork } from "@utils/network";
+import { availableConnectors } from "@app/provider";
+import { useStarknetkitConnectModal } from "starknetkit";
+import Image from "next/image";
+import { PendingBoostClaim } from "types/backTypes";
+import Typography from "./typography/typography";
+import { TEXT_TYPE } from "@constants/typography";
+import Hamburger from "./hamburger";
+import { useWallet } from "@context/WalletProvider";
 
 const Navbar: FunctionComponent = () => {
   const currentNetwork = getCurrentNetwork();
@@ -41,8 +41,8 @@ const Navbar: FunctionComponent = () => {
   const [isWrongNetwork, setIsWrongNetwork] = useState(false);
   const { connectAsync } = useConnect();
   const { disconnect } = useDisconnect();
-  const domainOrAddressMinified = useDisplayName(address ?? '');
-  const network = currentNetwork === 'TESTNET' ? 'testnet' : 'mainnet';
+  const domainOrAddressMinified = useDisplayName(address ?? "");
+  const network = currentNetwork === "TESTNET" ? "testnet" : "mainnet";
   const [navbarBg, setNavbarBg] = useState<boolean>(false);
   const [showWallet, setShowWallet] = useState<boolean>(false);
   const route = usePathname();
@@ -54,10 +54,10 @@ const Navbar: FunctionComponent = () => {
     SQInfoData[]
   >([
     {
-      title: '',
-      subtext: '',
-      link: '',
-      linkText: '',
+      title: "",
+      subtext: "",
+      link: "",
+      linkText: "",
     },
   ]);
   const { starknetkitConnectModal } = useStarknetkitConnectModal({
@@ -71,12 +71,12 @@ const Navbar: FunctionComponent = () => {
     const finalNotificationsList: SQInfoData[] = [];
     res.forEach((boost: PendingBoostClaim) => {
       const data = {
-        title: 'Congratulations! 🎉',
+        title: "Congratulations! 🎉",
         subtext: `You have just won ${parseInt(
           String(boost?.amount / boost?.num_of_winners)
         )} USDC thanks to the "${boost.name}” boost`,
-        link: '/quest-boost/' + boost.id,
-        linkText: 'Claim your reward',
+        link: "/quest-boost/" + boost.id,
+        linkText: "Claim your reward",
       };
       finalNotificationsList.push(data);
     });
@@ -92,12 +92,12 @@ const Navbar: FunctionComponent = () => {
   useEffect(() => {
     const connectToStarknet = async () => {
       if (
-        !localStorage.getItem('SQ-connectedWallet') &&
-        route !== '/partnership'
+        !localStorage.getItem("SQ-connectedWallet") &&
+        route !== "/partnership"
       ) {
         connectWallet();
       } else {
-        const connectordId = localStorage.getItem('SQ-connectedWallet');
+        const connectordId = localStorage.getItem("SQ-connectedWallet");
         const connector = availableConnectors.find(
           (item) => item.id === connectordId
         );
@@ -116,9 +116,9 @@ const Navbar: FunctionComponent = () => {
     account.getChainId().then((chainId) => {
       const isWrongNetwork =
         (chainId === constants.StarknetChainId.SN_SEPOLIA &&
-          network === 'mainnet') ||
+          network === "mainnet") ||
         (chainId === constants.StarknetChainId.SN_MAIN &&
-          network === 'testnet');
+          network === "testnet");
       setIsWrongNetwork(isWrongNetwork);
     });
   }, [account, network, isConnected]);
@@ -129,7 +129,7 @@ const Navbar: FunctionComponent = () => {
       return;
     }
     await connectAsync({ connector: connector as Connector });
-    localStorage.setItem('SQ-connectedWallet', connector.id);
+    localStorage.setItem("SQ-connectedWallet", connector.id);
   };
 
   function disconnectByClick(): void {
@@ -137,7 +137,7 @@ const Navbar: FunctionComponent = () => {
     setIsConnected(false);
     setIsWrongNetwork(false);
     setShowWallet(false);
-    localStorage.removeItem('SQ-connectedWallet');
+    localStorage.removeItem("SQ-connectedWallet");
   }
 
   function handleNav(): void {
@@ -155,7 +155,7 @@ const Navbar: FunctionComponent = () => {
   function topButtonText(): string | undefined {
     setNewAddress(domainOrAddressMinified);
     if (address) setNewURLParams(address);
-    const textToReturn = isConnected ? domainOrAddressMinified : 'connect';
+    const textToReturn = isConnected ? domainOrAddressMinified : "connect";
 
     return textToReturn;
   }
@@ -169,9 +169,9 @@ const Navbar: FunctionComponent = () => {
   };
 
   useEffect(() => {
-    window.addEventListener('scroll', handleScroll);
+    window.addEventListener("scroll", handleScroll);
     return () => {
-      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener("scroll", handleScroll);
     };
   }, []);
 
@@ -189,7 +189,7 @@ const Navbar: FunctionComponent = () => {
       >
         <div
           className={`${styles.navbarContainer} ${
-            navbarBg ? styles.navbarScrolled : ''
+            navbarBg ? styles.navbarScrolled : ""
           }`}
         >
           <div className={styles.navbarLogo}>
@@ -262,8 +262,8 @@ const Navbar: FunctionComponent = () => {
         <div
           className={
             nav
-              ? 'mt-24 lg:hidden fixed left-0 top-0 w-full h-screen bg-black/10 z-10' //extra margin so page doesnt cover forst navbar buttons
-              : ''
+              ? "mt-24 lg:hidden fixed left-0 top-0 w-full h-screen bg-black/10 z-10" //extra margin so page doesnt cover forst navbar buttons
+              : ""
           }
         >
           <div
@@ -340,7 +340,7 @@ const Navbar: FunctionComponent = () => {
       </div>
       <ModalMessage
         open={isWrongNetwork}
-        title={'Wrong network'}
+        title={"Wrong network"}
         closeModal={() => setIsWrongNetwork(false)}
         message={
           <div className='mt-3 flex flex-col items-center justify-center text-center'>
