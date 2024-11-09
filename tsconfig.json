@@ -73,7 +73,6 @@
     "**/*.tsx",
     "jest.config.js",
     ".next/types/**/*.ts",
-    "types/starknet.d.ts"
   ],
   "exclude": [
     "node_modules"
