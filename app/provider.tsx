@@ -122,25 +122,25 @@ export function Providers({ children }: { children: React.ReactNode }) {
   });
 
   return (
-    <WalletProvider>
-      <StarknetConfig
-        chains={chains}
-        provider={provider}
-        connectors={availableConnectors as Connector[]}
-        autoConnect
-      >
-        <StarknetIdJsProvider>
-          <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <NotificationProvider>
-              <ThemeProvider theme={theme}>
-                <PostHogProvider client={posthog}>
+    <StarknetConfig
+      chains={chains}
+      provider={provider}
+      connectors={availableConnectors as Connector[]}
+      autoConnect
+    >
+      <StarknetIdJsProvider>
+        <LocalizationProvider dateAdapter={AdapterDayjs}>
+          <NotificationProvider>
+            <ThemeProvider theme={theme}>
+              <PostHogProvider client={posthog}>
+                <WalletProvider>
                   <QuestsContextProvider>{children}</QuestsContextProvider>
-                </PostHogProvider>
-              </ThemeProvider>
-            </NotificationProvider>
-          </LocalizationProvider>
-        </StarknetIdJsProvider>
-      </StarknetConfig>
-    </WalletProvider>
+                </WalletProvider>
+              </PostHogProvider>
+            </ThemeProvider>
+          </NotificationProvider>
+        </LocalizationProvider>
+      </StarknetIdJsProvider>
+    </StarknetConfig>
   );
 }

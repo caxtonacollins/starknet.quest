@@ -1,52 +1,52 @@
-"use client";
-import React, { useCallback, useContext, useEffect, useState } from "react";
-import styles from "@styles/dashboard.module.css";
-import ProfileCard from "@components/UI/profileCard/profileCard";
+'use client';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
+import styles from '@styles/dashboard.module.css';
+import ProfileCard from '@components/UI/profileCard/profileCard';
 import {
   fetchLeaderboardRankings,
   fetchLeaderboardToppers,
   getBoosts,
   getCompletedQuests,
-} from "@services/apiService";
-import { useAccount } from "@starknet-react/core";
-import Blur from "@components/shapes/blur";
-import { utils } from "starknetid.js";
-import { StarknetIdJsContext } from "@context/StarknetIdJsProvider";
-import { hexToDecimal, tokenToDecimal } from "@utils/feltService";
-import { isHexString, minifyAddress } from "@utils/stringService";
-import ProfileCardSkeleton from "@components/skeletons/profileCardSkeleton";
-import { getDataFromId } from "@services/starknetIdService";
-import { usePathname, useRouter } from "next/navigation";
-import ErrorScreen from "@components/UI/screens/errorScreen";
+} from '@services/apiService';
+import { useAccount } from '@starknet-react/core';
+import Blur from '@components/shapes/blur';
+import { utils } from 'starknetid.js';
+import { StarknetIdJsContext } from '@context/StarknetIdJsProvider';
+import { hexToDecimal, tokenToDecimal } from '@utils/feltService';
+import { isHexString, minifyAddress } from '@utils/stringService';
+import ProfileCardSkeleton from '@components/skeletons/profileCardSkeleton';
+import { getDataFromId } from '@services/starknetIdService';
+import { usePathname, useRouter } from 'next/navigation';
+import ErrorScreen from '@components/UI/screens/errorScreen';
 import {
   ArgentDappMap,
   ArgentTokenMap,
   ArgentUserDapp,
   ArgentUserToken,
   CompletedQuests,
-} from "../../types/backTypes";
-import QuestSkeleton from "@components/skeletons/questsSkeleton";
-import QuestCardCustomised from "@components/dashboard/CustomisedQuestCard";
-import QuestStyles from "@styles/Home.module.css";
-import { Tab, Tabs } from "@mui/material";
-import { MILLISECONDS_PER_WEEK } from "@constants/common";
-import useBoost from "@hooks/useBoost";
-import BoostCard from "@components/quest-boost/boostCard";
-import Typography from "@components/UI/typography/typography";
-import { TEXT_TYPE } from "@constants/typography";
-import { a11yProps } from "@components/UI/tabs/a11y";
-import { CustomTabPanel } from "@components/UI/tabs/customTab";
-import SuggestedQuests from "@components/dashboard/SuggestedQuests";
-import PortfolioSummary from "@components/dashboard/PortfolioSummary";
-import { useNotification } from "@context/NotificationProvider";
+} from '../../types/backTypes';
+import QuestSkeleton from '@components/skeletons/questsSkeleton';
+import QuestCardCustomised from '@components/dashboard/CustomisedQuestCard';
+import QuestStyles from '@styles/Home.module.css';
+import { Tab, Tabs } from '@mui/material';
+import { MILLISECONDS_PER_WEEK } from '@constants/common';
+import useBoost from '@hooks/useBoost';
+import BoostCard from '@components/quest-boost/boostCard';
+import Typography from '@components/UI/typography/typography';
+import { TEXT_TYPE } from '@constants/typography';
+import { a11yProps } from '@components/UI/tabs/a11y';
+import { CustomTabPanel } from '@components/UI/tabs/customTab';
+import SuggestedQuests from '@components/dashboard/SuggestedQuests';
+import PortfolioSummary from '@components/dashboard/PortfolioSummary';
+import { useNotification } from '@context/NotificationProvider';
 import {
   calculateTokenPrice,
   fetchDapps,
   fetchTokens,
   fetchUserDapps,
   fetchUserTokens,
-} from "@services/argentPortfolioService";
-import PortfolioSummarySkeleton from "@components/skeletons/portfolioSummarySkeleton";
+} from '@services/argentPortfolioService';
+import PortfolioSummarySkeleton from '@components/skeletons/portfolioSummarySkeleton';
 
 type AddressOrDomainProps = {
   params: {
@@ -112,10 +112,10 @@ export default function Page({ params }: AddressOrDomainProps) {
       try {
         if (!addr) return;
         const res = await getCompletedQuests(addr);
-        if (!res || "error" in res) return;
+        if (!res || 'error' in res) return;
         setCompletedQuests(res);
       } catch (err) {
-        console.log("Error while fetching quests", err);
+        console.log('Error while fetching quests', err);
       }
     },
     [address, identity]
@@ -154,7 +154,7 @@ export default function Page({ params }: AddressOrDomainProps) {
         setClaimableQuests(filteredBoosts);
       }
     } catch (err) {
-      console.log("Error while fetching boosts", err);
+      console.log('Error while fetching boosts', err);
     }
   }, [address, completedQuests]);
 
@@ -169,7 +169,7 @@ export default function Page({ params }: AddressOrDomainProps) {
         addr: hexToDecimal(addr),
         page_size: 10,
         shift: 0,
-        duration: "all",
+        duration: 'all',
       });
       if (!res) return;
       setUserRanking(res);
@@ -182,7 +182,7 @@ export default function Page({ params }: AddressOrDomainProps) {
       if (!addr) return;
       const res = await fetchLeaderboardToppers({
         addr: hexToDecimal(addr),
-        duration: "all",
+        duration: 'all',
       });
       if (!res) return;
       setLeaderboardData(res);
@@ -205,7 +205,7 @@ export default function Page({ params }: AddressOrDomainProps) {
     userTokens: ArgentUserToken[],
     tokens: ArgentTokenMap,
     dapps: ArgentDappMap,
-    userDapps: ArgentUserDapp[],
+    userDapps: ArgentUserDapp[]
   ) => {
     let totalValue = 0;
     const assetValues: { [symbol: string]: number } = {};
@@ -213,7 +213,7 @@ export default function Page({ params }: AddressOrDomainProps) {
     // Process user tokens in parallel
     const userTokenPromises = userTokens.map(async (token) => {
       const tokenInfo = tokens[token.tokenAddress];
-      if (!tokenInfo || token.tokenBalance === "0") return null;
+      if (!tokenInfo || token.tokenBalance === '0') return null;
 
       // Skip protocol tokens (like LPT pair tokens, staking, etc.)
       if (tokenInfo.dappId) {
@@ -224,60 +224,70 @@ export default function Page({ params }: AddressOrDomainProps) {
         const value = await calculateTokenPrice(
           token.tokenAddress,
           tokenToDecimal(token.tokenBalance, tokenInfo.decimals),
-          "USD"
+          'USD'
         );
         return {
           value,
-          symbol: tokenInfo.symbol || "Unknown",
-          isProtocolToken: !!tokenInfo.dappId
+          symbol: tokenInfo.symbol || 'Unknown',
+          isProtocolToken: !!tokenInfo.dappId,
         };
       } catch (err) {
-        console.log(`Error calculating price for token ${token.tokenAddress}:`, err);
+        console.log(
+          `Error calculating price for token ${token.tokenAddress}:`,
+          err
+        );
         return null;
       }
     });
 
     // Flatten userDapps into an array of token balances
-    const dappBalances = userDapps.flatMap(dapp =>
-      dapp.products[0]?.positions.flatMap(position =>
-        Object.entries(position.totalBalances).map(([tokenAddress, balance]) => ({
-          tokenAddress,
-          balance,
-          dappId: dapp.dappId
-        }))
-      ) ?? []
+    const dappBalances = userDapps.flatMap(
+      (dapp) =>
+        dapp.products[0]?.positions.flatMap((position) =>
+          Object.entries(position.totalBalances).map(
+            ([tokenAddress, balance]) => ({
+              tokenAddress,
+              balance,
+              dappId: dapp.dappId,
+            })
+          )
+        ) ?? []
     );
 
     // Process all balances in parallel
-    const balancePromises = dappBalances.map(async ({ tokenAddress, balance, dappId }) => {
-      const tokenInfo = tokens[tokenAddress];
-      if (!tokenInfo || balance === "0") return null;
+    const balancePromises = dappBalances.map(
+      async ({ tokenAddress, balance, dappId }) => {
+        const tokenInfo = tokens[tokenAddress];
+        if (!tokenInfo || balance === '0') return null;
 
-      try {
-        const value = await calculateTokenPrice(
-          tokenAddress,
-          tokenToDecimal(balance, tokenInfo.decimals),
-          "USD"
-        );
+        try {
+          const value = await calculateTokenPrice(
+            tokenAddress,
+            tokenToDecimal(balance, tokenInfo.decimals),
+            'USD'
+          );
 
-        return {
-          value,
-          symbol: tokenInfo.symbol || "Unknown",
-          isProtocolToken: !!tokenInfo.dappId,
-        };
-      } catch (err) {
-        console.log(`Error calculating price for token ${tokenAddress}:`, err);
-        return null;
+          return {
+            value,
+            symbol: tokenInfo.symbol || 'Unknown',
+            isProtocolToken: !!tokenInfo.dappId,
+          };
+        } catch (err) {
+          console.log(
+            `Error calculating price for token ${tokenAddress}:`,
+            err
+          );
+          return null;
+        }
       }
-    });
+    );
 
     // Process results
-    const results = (await Promise.all([
-      ...balancePromises,
-      ...userTokenPromises
-    ])).filter(Boolean);
+    const results = (
+      await Promise.all([...balancePromises, ...userTokenPromises])
+    ).filter(Boolean);
 
-    results.forEach(result => {
+    results.forEach((result) => {
       if (!result) return;
       const { value, symbol, isProtocolToken } = result;
 
@@ -295,52 +305,59 @@ export default function Page({ params }: AddressOrDomainProps) {
       .map(([symbol, value]) => ({
         itemLabel: symbol,
         itemValue: ((value / totalValue) * 100).toFixed(2),
-        itemValueSymbol: "%",
-        color: "" // Colors will be assigned later
+        itemValueSymbol: '%',
+        color: '', // Colors will be assigned later
       }));
 
     // Handle "Others" category if needed
     if (sortedAssets.length > 4) {
-      const others = sortedAssets.slice(4).reduce(
-        (sum, asset) => sum + parseFloat(asset.itemValue),
-        0
-      );
+      const others = sortedAssets
+        .slice(4)
+        .reduce((sum, asset) => sum + parseFloat(asset.itemValue), 0);
       sortedAssets.splice(4);
       sortedAssets.push({
-        itemLabel: "Others",
+        itemLabel: 'Others',
         itemValue: others.toFixed(2),
-        itemValueSymbol: "%",
-        color: ""
+        itemValueSymbol: '%',
+        color: '',
       });
     }
 
     // Assign colors
-    const colors = ["#1E2097", "#637DEB", "#2775CA", "#5CE3FE", "#F4FAFF"];
+    const colors = ['#1E2097', '#637DEB', '#2775CA', '#5CE3FE', '#F4FAFF'];
     sortedAssets.forEach((asset, index) => {
       asset.color = colors[index % colors.length]; // Use modulo to recycle colors if needed
     });
     return sortedAssets;
   };
 
-  const fetchPortfolioAssets = useCallback(async (data: {
-    dapps: ArgentDappMap,
-    tokens: ArgentTokenMap,
-    userTokens: ArgentUserToken[],
-    userDapps: ArgentUserDapp[]
-  }) => {
-    const { dapps, tokens, userTokens, userDapps } = data;
-    try {
-      if (!tokens || !userTokens || !dapps || !userDapps) {
-        console.warn('Missing required data for portfolio calculation');
-        return;
+  const fetchPortfolioAssets = useCallback(
+    async (data: {
+      dapps: ArgentDappMap;
+      tokens: ArgentTokenMap;
+      userTokens: ArgentUserToken[];
+      userDapps: ArgentUserDapp[];
+    }) => {
+      const { dapps, tokens, userTokens, userDapps } = data;
+      try {
+        if (!tokens || !userTokens || !dapps || !userDapps) {
+          console.warn('Missing required data for portfolio calculation');
+          return;
+        }
+        const assets = await calculateAssetPercentages(
+          userTokens,
+          tokens,
+          dapps,
+          userDapps
+        );
+        setPortfolioAssets(assets);
+      } catch (error) {
+        showNotification('Error while fetching portfolio assets', 'error');
+        console.log('Error while fetching portfolio assets', error);
       }
-      const assets = await calculateAssetPercentages(userTokens, tokens, dapps, userDapps);
-      setPortfolioAssets(assets);
-    } catch (error) {
-      showNotification("Error while fetching portfolio assets", "error");
-      console.log("Error while fetching portfolio assets", error);
-    }
-  }, []);
+    },
+    []
+  );
 
   const userHasDebt = (userDapps: ArgentUserDapp[]) => {
     let debt: DebtStatus = { hasDebt: false, tokens: [] };
@@ -369,7 +386,7 @@ export default function Page({ params }: AddressOrDomainProps) {
   const handleDebt = async (
     protocolsMap: ChartItemMap,
     userDapps: ArgentUserDapp[],
-    tokens: ArgentTokenMap,
+    tokens: ArgentTokenMap
   ) => {
     const debtStatus = userHasDebt(userDapps);
     if (!debtStatus || !debtStatus.hasDebt) {
@@ -384,7 +401,7 @@ export default function Page({ params }: AddressOrDomainProps) {
           debt.tokenBalance.toString(),
           tokens[debt.tokenAddress].decimals
         ),
-        "USD"
+        'USD'
       );
 
       protocolsMap[debt.dappId].itemValue = value.toFixed(2);
@@ -395,16 +412,16 @@ export default function Page({ params }: AddressOrDomainProps) {
     protocolsMap: ChartItemMap,
     userTokens: ArgentUserToken[],
     tokens: ArgentTokenMap,
-    dapps: ArgentDappMap,
+    dapps: ArgentDappMap
   ) => {
     for await (const token of userTokens) {
       const tokenInfo = tokens[token.tokenAddress];
-      if (tokenInfo.dappId && token.tokenBalance != "0") {
+      if (tokenInfo.dappId && token.tokenBalance != '0') {
         let itemValue = 0;
         const currentTokenBalance = await calculateTokenPrice(
           token.tokenAddress,
           tokenToDecimal(token.tokenBalance, tokenInfo.decimals),
-          "USD"
+          'USD'
         );
 
         if (protocolsMap[tokenInfo.dappId]?.itemValue) {
@@ -416,9 +433,9 @@ export default function Page({ params }: AddressOrDomainProps) {
         }
 
         protocolsMap[tokenInfo.dappId] = {
-          color: "",
+          color: '',
           itemLabel: dapps[tokenInfo.dappId].name,
-          itemValueSymbol: "$",
+          itemValueSymbol: '$',
           itemValue: itemValue.toFixed(2),
         };
       }
@@ -429,7 +446,7 @@ export default function Page({ params }: AddressOrDomainProps) {
     protocolsMap: ChartItemMap,
     userDapps: ArgentUserDapp[],
     tokens: ArgentTokenMap,
-    dapps: ArgentDappMap,
+    dapps: ArgentDappMap
   ) => {
     for await (const userDapp of userDapps) {
       if (protocolsMap[userDapp.dappId]) {
@@ -448,15 +465,15 @@ export default function Page({ params }: AddressOrDomainProps) {
               position.totalBalances[tokenAddress],
               tokens[tokenAddress].decimals
             ),
-            "USD"
+            'USD'
           );
         }
       }
 
       protocolsMap[userDapp.dappId] = {
-        color: "",
+        color: '',
         itemLabel: dapps[userDapp.dappId].name,
-        itemValueSymbol: "$",
+        itemValueSymbol: '$',
         itemValue: protocolBalance.toFixed(2),
       };
     }
@@ -475,98 +492,103 @@ export default function Page({ params }: AddressOrDomainProps) {
       return;
     }
     sortedProtocols.push({
-      itemLabel: "Others",
+      itemLabel: 'Others',
       itemValue: otherProtocols
         .reduce(
           (valueSum, protocol) => valueSum + Number(protocol.itemValue),
           0
         )
         .toFixed(2),
-      itemValueSymbol: "$",
-      color: "",
+      itemValueSymbol: '$',
+      color: '',
     });
   };
 
   const assignProtocolColors = (sortedProtocols: ChartItem[]) => {
     const portfolioProtocolColors = [
-      "#278015",
-      "#23F51F",
-      "#DEFE5C",
-      "#9EFABB",
-      "#F4FAFF",
+      '#278015',
+      '#23F51F',
+      '#DEFE5C',
+      '#9EFABB',
+      '#F4FAFF',
     ];
     sortedProtocols.forEach((protocol, index) => {
       protocol.color = portfolioProtocolColors[index];
     });
   };
 
-  const fetchPortfolioProtocols = useCallback(async (data: {
-    dapps: ArgentDappMap, 
-    tokens: ArgentTokenMap, 
-    userTokens: ArgentUserToken[], 
-    userDapps: ArgentUserDapp[]
-  }) => {
-    const { dapps, tokens, userTokens, userDapps } = data;
+  const fetchPortfolioProtocols = useCallback(
+    async (data: {
+      dapps: ArgentDappMap;
+      tokens: ArgentTokenMap;
+      userTokens: ArgentUserToken[];
+      userDapps: ArgentUserDapp[];
+    }) => {
+      const { dapps, tokens, userTokens, userDapps } = data;
 
-    if (!dapps || !tokens || (!userTokens && !userDapps)) return;
-    let protocolsMap: ChartItemMap = {};
+      if (!dapps || !tokens || (!userTokens && !userDapps)) return;
+      let protocolsMap: ChartItemMap = {};
 
-    try {
-      await getProtocolsFromTokens(protocolsMap, userTokens, tokens, dapps);
-      await handleDebt(protocolsMap, userDapps, tokens); // Tokens show debt as balance 0, so need to handle it manually
-      await getProtocolsFromDapps(protocolsMap, userDapps, tokens, dapps);
+      try {
+        await getProtocolsFromTokens(protocolsMap, userTokens, tokens, dapps);
+        await handleDebt(protocolsMap, userDapps, tokens); // Tokens show debt as balance 0, so need to handle it manually
+        await getProtocolsFromDapps(protocolsMap, userDapps, tokens, dapps);
 
-      let sortedProtocols = sortProtocols(protocolsMap);
-      handleExtraProtocols(sortedProtocols);
-      assignProtocolColors(sortedProtocols);
+        let sortedProtocols = sortProtocols(protocolsMap);
+        handleExtraProtocols(sortedProtocols);
+        assignProtocolColors(sortedProtocols);
 
-      setPortfolioProtocols(sortedProtocols);
-    } catch (error) {
-      showNotification(
-        "Error while calculating address portfolio stats",
-        "error"
-      );
-      console.log("Error while calculating address portfolio stats", error);
-    }
-  }, [address]);
-
-  const fetchPortfolioData = useCallback(async (addr: string, abortController: AbortController) => {
-    setLoadingProtocols(true);
-    try {
-      // Argent API requires lowercase address
-      const normalizedAddr = addr.toLowerCase();
-      const [dappsData, tokensData, userTokensData, userDappsData] =
-        await Promise.all([
-          fetchDapps({ signal: abortController.signal }),
-          fetchTokens({ signal: abortController.signal }),
-          fetchUserTokens(normalizedAddr, { signal: abortController.signal }),
-          fetchUserDapps(normalizedAddr, { signal: abortController.signal }),
-        ]);
-
-      const data = {
-        dapps: dappsData,
-        tokens: tokensData,
-        userTokens: userTokensData,
-        userDapps: userDappsData,
-      };
-
-      await Promise.all([
-        fetchPortfolioProtocols(data),
-        fetchPortfolioAssets(data),
-      ]);
-    } catch (error) {
-      console.log("Error while fetching address portfolio", error);
-      if (error instanceof Error && error.name === 'AbortError') {
-        // Do not show notification for AbortError
-        return;
+        setPortfolioProtocols(sortedProtocols);
+      } catch (error) {
+        showNotification(
+          'Error while calculating address portfolio stats',
+          'error'
+        );
+        console.log('Error while calculating address portfolio stats', error);
       }
+    },
+    [address]
+  );
 
-      showNotification("Error while fetching address portfolio", "error");
+  const fetchPortfolioData = useCallback(
+    async (addr: string, abortController: AbortController) => {
+      setLoadingProtocols(true);
+      try {
+        // Argent API requires lowercase address
+        const normalizedAddr = addr.toLowerCase();
+        const [dappsData, tokensData, userTokensData, userDappsData] =
+          await Promise.all([
+            fetchDapps({ signal: abortController.signal }),
+            fetchTokens({ signal: abortController.signal }),
+            fetchUserTokens(normalizedAddr, { signal: abortController.signal }),
+            fetchUserDapps(normalizedAddr, { signal: abortController.signal }),
+          ]);
 
-    } finally {
-      setLoadingProtocols(false);
-    }
-  }, [fetchPortfolioProtocols, fetchPortfolioAssets]);
+        const data = {
+          dapps: dappsData,
+          tokens: tokensData,
+          userTokens: userTokensData,
+          userDapps: userDappsData,
+        };
+
+        await Promise.all([
+          fetchPortfolioProtocols(data),
+          fetchPortfolioAssets(data),
+        ]);
+      } catch (error) {
+        console.log('Error while fetching address portfolio', error);
+        if (error instanceof Error && error.name === 'AbortError') {
+          // Do not show notification for AbortError
+          return;
+        }
+
+        showNotification('Error while fetching address portfolio', 'error');
+      } finally {
+        setLoadingProtocols(false);
+      }
+    },
+    [fetchPortfolioProtocols, fetchPortfolioAssets]
+  );
 
   useEffect(() => {
     const abortController = new AbortController();
@@ -587,8 +609,8 @@ export default function Page({ params }: AddressOrDomainProps) {
 
   useEffect(() => {
     if (
-      typeof addressOrDomain === "string" &&
-      addressOrDomain?.toString().toLowerCase().endsWith(".stark")
+      typeof addressOrDomain === 'string' &&
+      addressOrDomain?.toString().toLowerCase().endsWith('.stark')
     ) {
       if (
         !utils.isBraavosSubdomain(addressOrDomain) &&
@@ -619,7 +641,7 @@ export default function Page({ params }: AddressOrDomainProps) {
           ?.getAddressFromStarkName(addressOrDomain)
           .then((addr) => {
             setIdentity({
-              id: "0",
+              id: '0',
               owner: addr,
               domain: { domain: addressOrDomain },
               main: false,
@@ -632,7 +654,7 @@ export default function Page({ params }: AddressOrDomainProps) {
           });
       }
     } else if (
-      typeof addressOrDomain === "string" &&
+      typeof addressOrDomain === 'string' &&
       isHexString(addressOrDomain)
     ) {
       starknetIdNavigator
@@ -662,7 +684,7 @@ export default function Page({ params }: AddressOrDomainProps) {
                 });
             } else {
               setIdentity({
-                id: "0",
+                id: '0',
                 owner: addressOrDomain,
                 domain: { domain: name },
                 main: false,
@@ -673,7 +695,7 @@ export default function Page({ params }: AddressOrDomainProps) {
             }
           } else {
             setIdentity({
-              id: "0",
+              id: '0',
               owner: addressOrDomain,
               domain: { domain: minifyAddress(addressOrDomain) },
               main: false,
@@ -684,7 +706,7 @@ export default function Page({ params }: AddressOrDomainProps) {
         })
         .catch(() => {
           setIdentity({
-            id: "0",
+            id: '0',
             owner: addressOrDomain,
             domain: { domain: minifyAddress(addressOrDomain) },
             main: false,
@@ -701,9 +723,9 @@ export default function Page({ params }: AddressOrDomainProps) {
   if (notFound) {
     return (
       <ErrorScreen
-        errorMessage="Profile or Page not found"
-        buttonText="Go back to quests"
-        onClick={() => router.push("/")}
+        errorMessage='Profile or Page not found'
+        buttonText='Go back to quests'
+        onClick={() => router.push('/')}
       />
     );
   }
@@ -735,7 +757,7 @@ export default function Page({ params }: AddressOrDomainProps) {
           <PortfolioSummarySkeleton />
         ) : (
           <PortfolioSummary
-            title="Portfolio by assets type"
+            title='Portfolio by assets type'
             data={portfolioAssets}
             totalBalance={portfolioAssets.reduce(
               (sum, item) => sum + Number(item.itemValue),
@@ -748,7 +770,7 @@ export default function Page({ params }: AddressOrDomainProps) {
           <PortfolioSummarySkeleton />
         ) : (
           <PortfolioSummary
-            title="Portfolio by protocol usage"
+            title='Portfolio by protocol usage'
             data={portfolioProtocols}
             totalBalance={portfolioProtocols.reduce(
               (sum, item) => sum + Number(item.itemValue),
@@ -764,24 +786,24 @@ export default function Page({ params }: AddressOrDomainProps) {
         <div>
           <Tabs
             style={{
-              borderBottom: "0.5px solid rgba(224, 224, 224, 0.3)",
+              borderBottom: '0.5px solid rgba(224, 224, 224, 0.3)',
             }}
-            className="pb-6"
+            className='pb-6'
             value={tabIndex}
             onChange={handleChangeTab}
-            aria-label="quests and collectons tabs"
-            indicatorColor="secondary"
+            aria-label='quests and collectons tabs'
+            indicatorColor='secondary'
           >
             <Tab
               disableRipple
               sx={{
-                borderRadius: "10px",
-                padding: "0px 12px 0px 12px",
-                textTransform: "none",
-                fontWeight: "600",
-                fontSize: "12px",
-                fontFamily: "Sora",
-                minHeight: "32px",
+                borderRadius: '10px',
+                padding: '0px 12px 0px 12px',
+                textTransform: 'none',
+                fontWeight: '600',
+                fontSize: '12px',
+                fontFamily: 'Sora',
+                minHeight: '32px',
               }}
               label={`Completed (${completedQuests.length})`}
               {...a11yProps(0)}
@@ -790,13 +812,13 @@ export default function Page({ params }: AddressOrDomainProps) {
               <Tab
                 disableRipple
                 sx={{
-                  borderRadius: "10px",
-                  padding: "0px 12px 0px 12px",
-                  textTransform: "none",
-                  fontWeight: "600",
-                  fontSize: "12px",
-                  fontFamily: "Sora",
-                  minHeight: "32px",
+                  borderRadius: '10px',
+                  padding: '0px 12px 0px 12px',
+                  textTransform: 'none',
+                  fontWeight: '600',
+                  fontSize: '12px',
+                  fontFamily: 'Sora',
+                  minHeight: '32px',
                 }}
                 label={`To claim (${claimableQuests})`}
                 {...a11yProps(1)}
@@ -804,7 +826,10 @@ export default function Page({ params }: AddressOrDomainProps) {
             ) : null}
           </Tabs>
         </div>
-        <CustomTabPanel value={tabIndex} index={0}>
+        <CustomTabPanel
+          value={tabIndex}
+          index={0}
+        >
           <div className={styles.quests_container}>
             {questsLoading ? (
               <QuestSkeleton />
@@ -812,7 +837,10 @@ export default function Page({ params }: AddressOrDomainProps) {
               isOwner ? (
                 <SuggestedQuests />
               ) : (
-                <Typography type={TEXT_TYPE.H2} className={styles.noBoosts}>
+                <Typography
+                  type={TEXT_TYPE.H2}
+                  className={styles.noBoosts}
+                >
                   User has not completed any quests at the moment
                 </Typography>
               )
@@ -821,7 +849,10 @@ export default function Page({ params }: AddressOrDomainProps) {
                 <div className={QuestStyles.questContainer}>
                   {completedQuests?.length > 0 &&
                     completedQuests?.map((quest) => (
-                      <QuestCardCustomised key={quest} id={quest} />
+                      <QuestCardCustomised
+                        key={quest}
+                        id={quest}
+                      />
                     ))}
                 </div>
               </section>
@@ -829,11 +860,14 @@ export default function Page({ params }: AddressOrDomainProps) {
           </div>
         </CustomTabPanel>
 
-        <CustomTabPanel value={tabIndex} index={1}>
+        <CustomTabPanel
+          value={tabIndex}
+          index={1}
+        >
           {questsLoading ? (
             <QuestSkeleton />
           ) : (
-            <div className="flex flex-wrap gap-10 justify-center lg:justify-start">
+            <div className='flex flex-wrap gap-10 justify-center lg:justify-start'>
               {claimableQuests &&
                 claimableQuests.map((quest) => (
                   <BoostCard

@@ -1,7 +1,67 @@
+// 'use client';
+
+// import { useRouter } from 'next/router';
+// import React, { createContext, useContext, useEffect, useState } from 'react';
+
+// type WalletContextType = {
+//   newAddress: string | null;
+//   setNewAddress: (account: string | null) => void;
+//   newURLParams: string | undefined;
+//   setNewURLParams: (account: string) => void;
+// };
+
+// const WalletContext = createContext<WalletContextType | undefined>(undefined);
+
+// export const WalletProvider: React.FC<{ children: React.ReactNode }> = ({
+//   children,
+// }) => {
+//   const router = useRouter();
+//   const [newAddress, setNewAddress] = useState<string | null>(null);
+//   const [newURLParams, setNewURLParams] = useState<string>();
+
+//   useEffect(() => {
+//     const updateUrl = (newURLParams: string) => {
+//       const queryParams = new URLSearchParams(window.location.search);
+//       queryParams.set('walletAddress', newURLParams);
+//       const newUrl = `${window.location.pathname}?${queryParams.toString()}`;
+//       router.replace(newUrl);
+//     };
+
+//     if (newURLParams) updateUrl(newURLParams);
+
+//   }, [newURLParams, newAddress]);
+
+//   return (
+//     <WalletContext.Provider
+//       value={{ newAddress, setNewAddress, newURLParams, setNewURLParams }}
+//     >
+//       {children}
+//     </WalletContext.Provider>
+//   );
+// };
+
+// export const useWallet = () => {
+//   const context = useContext(WalletContext);
+//   if (!context) {
+//     throw new Error('useWallet must be used within a WalletProvider');
+//   }
+//   return context;
+// };
+
+
+
+
+
+'use client';
+
+import { useRouter } from 'next/navigation';
 import React, { createContext, useContext, useEffect, useState } from 'react';
 
 type WalletContextType = {
-  currentAccount: string | null;
+  newAddress: string | null;
+  setNewAddress: (account: string | null) => void;
+  newURLParams: string;
+  setNewURLParams: (account: string) => void;
 };
 
 const WalletContext = createContext<WalletContextType | undefined>(undefined);
@@ -9,87 +69,40 @@ const WalletContext = createContext<WalletContextType | undefined>(undefined);
 export const WalletProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  const [currentAccount, setCurrentAccount] = useState<string | null>(null);
+  const [newAddress, setNewAddress] = useState<string | null>(null);
+  const [newURLParams, setNewURLParams] = useState<string>('');
+  const router = useRouter();
+  const [isMounted, setIsMounted] = useState(false);
 
-  // Handle account changes for StarkNet wallets
-  const handleAccountChange = (accounts: string[] | undefined) => {
-    if (accounts?.length && process.env.WALLET_ADDRESS_KEY != undefined) {
-      const newAccount = accounts[0];
-      setCurrentAccount(newAccount);
-      try {
-        localStorage.setItem(process.env.WALLET_ADDRESS_KEY, newAccount);
-      } catch (error) {
-        console.error('Failed to save wallet address:', error);
-      }
-    } else if (process.env.WALLET_ADDRESS_KEY != undefined) {
-      setCurrentAccount(null);
-      try {
-        localStorage.removeItem(process.env.WALLET_ADDRESS_KEY);
-      } catch (error) {
-        console.error('Failed to remove wallet address:', error);
-      }
-    }
-  };
-
-  //   Detect StarkNet wallet changes (Braavos, Argent X)
-  //   const setupStarknetListeners = () => {
-  //     if (window.starknet) {
-  //       window.starknet.on('accountsChanged', handleAccountChange);
-
-  //       // Set initial account and network for StarkNet
-  //       const starknetAccounts = window.starknet.account;
-  //       handleAccountChange(starknetAccounts);
-  //     }
-  //   };
-
-  const setupStarknetListeners = async () => {
-    if (window.starknet) {
-      try {
-        // Enable the StarkNet wallet and get the accounts
-        const starknetAccounts = await window.starknet.enable();
-
-        // Ensure starknetAccounts is an array
-        if (Array.isArray(starknetAccounts)) {
-          handleAccountChange(starknetAccounts);
-        } else {
-          console.error(
-            'Unexpected response from starknet.enable:',
-            starknetAccounts
-          );
-          setCurrentAccount(null);
-        }
-
-        // Subscribe to account changes
-        window.starknet.on('accountsChanged', handleAccountChange);
-      } catch (error) {
-        console.error('Failed to setup StarkNet listeners:', error);
-        setCurrentAccount(null);
-      }
-    }
-  };
-
+  // Ensure this only runs on the client side
   useEffect(() => {
-    setupStarknetListeners();
-
-    // Cleanup subscriptions on unmount
-    return () => {
-      if (window.starknet) {
-        window.starknet.off('accountsChanged', handleAccountChange);
-      }
-    };
+    setIsMounted(true);
   }, []);
 
+  useEffect(() => {
+    if (isMounted && newURLParams) {
+      const updateUrl = (newURLParams: string) => {
+        // Replace everything after the base URL with the new address
+        const newUrl = `/${newURLParams}`;
+        router.replace(newUrl);
+      };
+
+      updateUrl(newURLParams);
+    }
+  }, [isMounted, newURLParams, newAddress]);
+
   return (
-    <WalletContext.Provider value={{ currentAccount }}>
+    <WalletContext.Provider
+      value={{ newAddress, setNewAddress, newURLParams, setNewURLParams }}
+    >
       {children}
     </WalletContext.Provider>
   );
 };
 
-// Custom hook to use Wallet Context
 export const useWallet = () => {
   const context = useContext(WalletContext);
-  if (context === undefined) {
+  if (!context) {
     throw new Error('useWallet must be used within a WalletProvider');
   }
   return context;

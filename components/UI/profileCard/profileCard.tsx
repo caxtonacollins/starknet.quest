@@ -48,7 +48,7 @@ const ProfileCard: FunctionComponent<ProfileCardProps> = ({
   const [userXp, setUserXp] = useState<number>();
   const [totalBalance, setTotalBalance] = useState<number | null>(null);
   const sinceDate = useCreationDate(identity);
-  const { currentAccount } = useWallet();
+  const { newAddress } = useWallet();
 
   const formattedAddress = useMemo(
     () =>
@@ -89,10 +89,10 @@ const ProfileCard: FunctionComponent<ProfileCardProps> = ({
       }
     };
 
-    if (currentAccount) {
+    if (newAddress) {
       fetchTotalBalance();
     }
-  }, [formattedAddress, currentAccount]);
+  }, [formattedAddress, newAddress]);
 
   const computeData = useCallback(() => {
     if (
@@ -151,7 +151,7 @@ const ProfileCard: FunctionComponent<ProfileCardProps> = ({
             type={TEXT_TYPE.H2}
             className={`${styles.profile_name} mt-2`}
           >
-            {identity.domain?.domain || 'Unknown Domain'}
+            {newAddress || identity.domain?.domain || 'Unknown Domain'}
           </Typography>
           <div className={styles.address_div}>
             <div className='flex items-center gap-2'>
