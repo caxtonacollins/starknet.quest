@@ -20,7 +20,6 @@ import posthog from 'posthog-js';
 import { NotificationProvider } from '@context/NotificationProvider';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { WalletProvider } from '@context/WalletProvider';
 
 // Traffic measures
 if (typeof window !== 'undefined') {
