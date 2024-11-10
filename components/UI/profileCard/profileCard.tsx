@@ -7,7 +7,11 @@ import React, {
 } from "react";
 import styles from "@styles/dashboard.module.css";
 import { CDNImage } from "@components/cdn/image";
-import { useStarkProfile, type Address } from "@starknet-react/core";
+import {
+  useAccount,
+  useStarkProfile,
+  type Address,
+} from "@starknet-react/core";
 import Skeleton from "@mui/material/Skeleton";
 import trophyIcon from "public/icons/trophy.svg";
 import xpIcon from "public/icons/xpBadge.svg";
@@ -24,7 +28,6 @@ import { TEXT_TYPE } from "@constants/typography";
 import Typography from "../typography/typography";
 import { calculateTotalBalance } from "../../../services/argentPortfolioService";
 import { useHidePortfolio } from "@hooks/useHidePortfolio";
-import { useWallet } from "@context/WalletProvider";
 
 const MAX_RETRIES = 1000;
 const RETRY_DELAY = 2000;
@@ -48,13 +51,13 @@ const ProfileCard: FunctionComponent<ProfileCardProps> = ({
   const [userXp, setUserXp] = useState<number>();
   const [totalBalance, setTotalBalance] = useState<number | null>(null);
   const sinceDate = useCreationDate(identity);
-  const { newAddress } = useWallet();
+  const { address } = useAccount();
 
   const formattedAddress = useMemo(
     () =>
       (identity.owner.startsWith("0x")
         ? identity.owner
-        : `0x${identity.owner}`) as Address,
+        : `0x${address}`) as Address,
     [identity.owner]
   );
 
@@ -94,10 +97,10 @@ const ProfileCard: FunctionComponent<ProfileCardProps> = ({
       }
     };
 
-    if (newAddress) {
+    if (address) {
       fetchTotalBalance();
     }
-  }, [formattedAddress, newAddress]);
+  }, [formattedAddress, address]);
 
   const computeData = useCallback(() => {
     if (
@@ -157,7 +160,7 @@ const ProfileCard: FunctionComponent<ProfileCardProps> = ({
             type={TEXT_TYPE.H2}
             className={`${styles.profile_name} mt-2`}
           >
-            {newAddress || identity.domain?.domain || "Unknown Domain"}
+            {identity.domain?.domain || "Unknown Domain"}
           </Typography>
           <div className={styles.address_div}>
             <div className='flex items-center gap-2'>

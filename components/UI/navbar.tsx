@@ -31,7 +31,6 @@ import { PendingBoostClaim } from "types/backTypes";
 import Typography from "./typography/typography";
 import { TEXT_TYPE } from "@constants/typography";
 import Hamburger from "./hamburger";
-import { useWallet } from "@context/WalletProvider";
 
 const Navbar: FunctionComponent = () => {
   const currentNetwork = getCurrentNetwork();
@@ -49,7 +48,6 @@ const Navbar: FunctionComponent = () => {
   const [showNotifications, setShowNotifications] = useState<boolean>(false);
   const { notifications, unreadNotifications, updateReadStatus } =
     useNotificationManager();
-  const { setNewAddress, setNewURLParams } = useWallet();
   const [informationNotifications, setInformationNotifications] = useState<
     SQInfoData[]
   >([
@@ -153,8 +151,6 @@ const Navbar: FunctionComponent = () => {
   }
 
   function topButtonText(): string | undefined {
-    setNewAddress(domainOrAddressMinified);
-    if (address) setNewURLParams(address);
     const textToReturn = isConnected ? domainOrAddressMinified : "connect";
 
     return textToReturn;

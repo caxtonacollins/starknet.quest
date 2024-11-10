@@ -47,6 +47,7 @@ import {
   fetchUserTokens,
 } from "@services/argentPortfolioService";
 import PortfolioSummarySkeleton from "@components/skeletons/portfolioSummarySkeleton";
+import { useDisplayName } from "@hooks/displayName.tsx";
 
 type AddressOrDomainProps = {
   params: {
@@ -71,7 +72,6 @@ export default function Page({ params }: AddressOrDomainProps) {
   const router = useRouter();
   const addressOrDomain = params.addressOrDomain;
   const { showNotification } = useNotification();
-  const { address } = useAccount();
   const { starknetIdNavigator } = useContext(StarknetIdJsContext);
   const [initProfile, setInitProfile] = useState(false);
   const { getBoostClaimStatus } = useBoost();
@@ -95,6 +95,19 @@ export default function Page({ params }: AddressOrDomainProps) {
   const [portfolioAssets, setPortfolioAssets] = useState<ChartItem[]>([]);
   const [portfolioProtocols, setPortfolioProtocols] = useState<ChartItem[]>([]);
   const [loadingProtocols, setLoadingProtocols] = useState(true);
+  const { address } = useAccount();
+
+  useEffect(() => {
+    if (!address) return;
+
+    // Redirect to the new address profile
+    const updateUrl = (address: string) => {
+      const newUrl = `/${address}`;
+      router.replace(newUrl);
+    };
+
+    updateUrl(address);
+  }, [address, router]);
 
   const handleChangeTab = useCallback(
     (event: React.SyntheticEvent, newValue: number) => {

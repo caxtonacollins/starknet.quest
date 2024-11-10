@@ -133,9 +133,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
           <NotificationProvider>
             <ThemeProvider theme={theme}>
               <PostHogProvider client={posthog}>
-                <WalletProvider>
                   <QuestsContextProvider>{children}</QuestsContextProvider>
-                </WalletProvider>
               </PostHogProvider>
             </ThemeProvider>
           </NotificationProvider>
