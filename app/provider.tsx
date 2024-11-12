@@ -132,7 +132,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
           <NotificationProvider>
             <ThemeProvider theme={theme}>
               <PostHogProvider client={posthog}>
-                  <QuestsContextProvider>{children}</QuestsContextProvider>
+                <QuestsContextProvider>{children}</QuestsContextProvider>
               </PostHogProvider>
             </ThemeProvider>
           </NotificationProvider>
