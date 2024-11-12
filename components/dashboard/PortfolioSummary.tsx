@@ -11,6 +11,8 @@ import cursorPointer from '../../public/icons/pointer-cursor.png';
 import ClaimModal from "../discover/claimModal";
 import SuccessModal from "../discover/successModal";
 import { useHidePortfolio } from "@hooks/useHidePortfolio";
+import { formatNumberWithCommas } from "@utils/numberService";
+
 
 Chart.register(ArcElement, DoughnutController, Tooltip);
 
@@ -22,7 +24,6 @@ type PortfolioSummaryProps = {
   minSlicePercentage?: number,
 }
 
-
 const ChartEntry: FunctionComponent<ChartItem> = ({
   color,
   itemLabel,
@@ -30,7 +31,11 @@ const ChartEntry: FunctionComponent<ChartItem> = ({
   itemValueSymbol,
 }) => {
   const { hidePortfolio } = useHidePortfolio();
-  const value = itemValueSymbol === '%' ? itemValue + itemValueSymbol : itemValueSymbol + itemValue;
+  
+  // Use the formatNumberWithCommas function to format the value
+  const formattedValue = formatNumberWithCommas(Number(itemValue));
+  const value = itemValueSymbol === '%' ? formattedValue + itemValueSymbol : itemValueSymbol + formattedValue;
+  
   return (
     <div className="flex w-full justify-between my-1">
       <div className="flex flex-row w-full items-center gap-2">
@@ -74,7 +79,9 @@ const PortfolioSummary: FunctionComponent<PortfolioSummaryProps> = ({ title, dat
       tooltip: {
         callbacks: {
           label: function (tooltipItem: TooltipItem<"doughnut">) {
-            return ` ${data[tooltipItem.dataIndex].itemValueSymbol}${data[tooltipItem.dataIndex].itemValue}`;
+            // Format item value with commas here
+            const value = formatNumberWithCommas(Number(data[tooltipItem.dataIndex].itemValue));
+            return ` ${data[tooltipItem.dataIndex].itemValueSymbol}${value}`;
           }
         }
       }
@@ -87,7 +94,7 @@ const PortfolioSummary: FunctionComponent<PortfolioSummaryProps> = ({ title, dat
 
   const [showClaimModal, setShowClaimModal] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
-  
+
   return data.length > 0 ? (
     <div className={styles.dashboard_portfolio_summary}>
       <div className="flex flex-col md:flex-row w-full justify-between items-center mb-4">

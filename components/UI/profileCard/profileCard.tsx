@@ -28,6 +28,27 @@ import { TEXT_TYPE } from '@constants/typography';
 import Typography from '../typography/typography';
 import { calculateTotalBalance } from '../../../services/argentPortfolioService';
 import { useHidePortfolio } from '@hooks/useHidePortfolio';
+} from "react";
+import styles from "@styles/dashboard.module.css";
+import { CDNImage } from "@components/cdn/image";
+import { type Address } from "@starknet-react/core";
+import Skeleton from "@mui/material/Skeleton";
+import trophyIcon from "public/icons/trophy.svg";
+import xpIcon from "public/icons/xpBadge.svg";
+import useCreationDate from "@hooks/useCreationDate";
+import shareSrc from "public/icons/share.svg";
+import theme from "@styles/theme";
+import { EyeIcon, EyeIconSlashed } from "../iconsComponents/icons/eyeIcon";
+import ProfilIcon from "../iconsComponents/icons/profilIcon";
+import Link from "next/link";
+import SocialMediaActions from "../actions/socialmediaActions";
+import { getTweetLink } from "@utils/browserService";
+import { hexToDecimal } from "@utils/feltService";
+import { TEXT_TYPE } from "@constants/typography";
+import Typography from "../typography/typography";
+import { calculateTotalBalance } from "../../../services/argentPortfolioService";
+import Avatar from "../avatar";
+import { useHidePortfolio } from "@hooks/useHidePortfolio";
 
 const MAX_RETRIES = 1000;
 const RETRY_DELAY = 2000;
@@ -62,6 +83,9 @@ const ProfileCard: FunctionComponent<ProfileCardProps> = ({
   );
 
   const { data: profileData } = useStarkProfile({ address: formattedAddress });
+  const formattedAddress = (
+    identity.owner.startsWith("0x") ? identity.owner : `0x${identity.owner}`
+  ) as Address;
 
   const rankFormatter = useCallback((rank: number) => {
     if (rank > 10000) return '+10k';
@@ -140,6 +164,8 @@ const ProfileCard: FunctionComponent<ProfileCardProps> = ({
               src={profileData.profilePicture}
               className='rounded-full'
             />
+          { formattedAddress?.length !== 0 ? ( // show the avatar of the address in the URL
+            <Avatar width="120" address={formattedAddress} />
           ) : (
             <ProfilIcon
               width='120'

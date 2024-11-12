@@ -2,6 +2,7 @@ import {
   calculatePercentile,
   numberWithCommas,
   formatNumberThousandEqualsK,
+  formatNumberWithCommas,
 } from "@utils/numberService";
 
 describe("calculatePercentile function", () => {
@@ -62,5 +63,28 @@ describe("formatNumberThousandEqualsK function", () => {
   it("should return the input number as string for numbers < 1000", () => {
     expect(formatNumberThousandEqualsK(999)).toBe("999");
     expect(formatNumberThousandEqualsK(500)).toBe("500");
+  });
+});
+
+describe("formatNumberWithCommas function", () => {
+  it("should return a string representation of the number with commas", () => {
+    expect(formatNumberWithCommas(1000)).toBe("1,000");
+    expect(formatNumberWithCommas(1000000)).toBe("1,000,000");
+    expect(formatNumberWithCommas(123456789)).toBe("123,456,789");
+  });
+
+  it("should handle negative numbers", () => {
+    expect(formatNumberWithCommas(-1000)).toBe("-1,000");
+    expect(formatNumberWithCommas(-1000000)).toBe("-1,000,000");
+    expect(formatNumberWithCommas(-123456789)).toBe("-123,456,789");
+  });
+
+  it("should handle floating point numbers", () => {
+    expect(formatNumberWithCommas(1234.56)).toBe("1,234.56");
+    expect(formatNumberWithCommas(-1234.56)).toBe("-1,234.56");
+  });
+
+  it("should return '0' for input 0", () => {
+    expect(formatNumberWithCommas(0)).toBe("0");
   });
 });

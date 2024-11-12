@@ -17,3 +17,7 @@ export const formatNumberThousandEqualsK = (num: number) => {
       return num.toString();
     }
 };
+
+export const formatNumberWithCommas = (number: number): string => {
+  return number.toLocaleString(); 
+};
