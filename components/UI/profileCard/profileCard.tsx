@@ -4,30 +4,30 @@ import React, {
   useEffect,
   useMemo,
   useState,
-} from "react";
-import styles from "@styles/dashboard.module.css";
-import { CDNImage } from "@components/cdn/image";
+} from 'react';
+import styles from '@styles/dashboard.module.css';
+import { CDNImage } from '@components/cdn/image';
 import {
   useAccount,
   useStarkProfile,
   type Address,
-} from "@starknet-react/core";
-import Skeleton from "@mui/material/Skeleton";
-import trophyIcon from "public/icons/trophy.svg";
-import xpIcon from "public/icons/xpBadge.svg";
-import useCreationDate from "@hooks/useCreationDate";
-import shareSrc from "public/icons/share.svg";
-import theme from "@styles/theme";
-import { EyeIcon, EyeIconSlashed } from "../iconsComponents/icons/eyeIcon";
-import ProfilIcon from "../iconsComponents/icons/profilIcon";
-import Link from "next/link";
-import SocialMediaActions from "../actions/socialmediaActions";
-import { getTweetLink } from "@utils/browserService";
-import { hexToDecimal } from "@utils/feltService";
-import { TEXT_TYPE } from "@constants/typography";
-import Typography from "../typography/typography";
-import { calculateTotalBalance } from "../../../services/argentPortfolioService";
-import { useHidePortfolio } from "@hooks/useHidePortfolio";
+} from '@starknet-react/core';
+import Skeleton from '@mui/material/Skeleton';
+import trophyIcon from 'public/icons/trophy.svg';
+import xpIcon from 'public/icons/xpBadge.svg';
+import useCreationDate from '@hooks/useCreationDate';
+import shareSrc from 'public/icons/share.svg';
+import theme from '@styles/theme';
+import { EyeIcon, EyeIconSlashed } from '../iconsComponents/icons/eyeIcon';
+import ProfilIcon from '../iconsComponents/icons/profilIcon';
+import Link from 'next/link';
+import SocialMediaActions from '../actions/socialmediaActions';
+import { getTweetLink } from '@utils/browserService';
+import { hexToDecimal } from '@utils/feltService';
+import { TEXT_TYPE } from '@constants/typography';
+import Typography from '../typography/typography';
+import { calculateTotalBalance } from '../../../services/argentPortfolioService';
+import { useHidePortfolio } from '@hooks/useHidePortfolio';
 
 const MAX_RETRIES = 1000;
 const RETRY_DELAY = 2000;
@@ -55,7 +55,7 @@ const ProfileCard: FunctionComponent<ProfileCardProps> = ({
 
   const formattedAddress = useMemo(
     () =>
-      (identity.owner.startsWith("0x")
+      (identity.owner.startsWith('0x')
         ? identity.owner
         : `0x${address}`) as Address,
     [identity.owner]
@@ -64,8 +64,8 @@ const ProfileCard: FunctionComponent<ProfileCardProps> = ({
   const { data: profileData } = useStarkProfile({ address: formattedAddress });
 
   const rankFormatter = useCallback((rank: number) => {
-    if (rank > 10000) return "+10k";
-    if (rank > 5000) return "+5k";
+    if (rank > 10000) return '+10k';
+    if (rank > 5000) return '+5k';
     return rank;
   }, []);
 
@@ -74,7 +74,7 @@ const ProfileCard: FunctionComponent<ProfileCardProps> = ({
       let attempts = 0;
       while (true) {
         try {
-          const balance = await calculateTotalBalance(formattedAddress, "USD", {
+          const balance = await calculateTotalBalance(formattedAddress, 'USD', {
             signal,
           });
           setTotalBalance(balance);
@@ -88,7 +88,7 @@ const ProfileCard: FunctionComponent<ProfileCardProps> = ({
 
           if (attempts >= MAX_RETRIES) {
             console.error(
-              "Failed to fetch total balance after multiple attempts."
+              'Failed to fetch total balance after multiple attempts.'
             );
           } else {
             await new Promise((resolve) => setTimeout(resolve, RETRY_DELAY));
@@ -125,7 +125,7 @@ const ProfileCard: FunctionComponent<ProfileCardProps> = ({
 
   const tweetShareLink: string = useMemo(() => {
     return `${getTweetLink(
-      `Check out${isOwner ? " my " : " "}Starknet Quest Profile at ${
+      `Check out${isOwner ? ' my ' : ' '}Starknet Quest Profile at ${
         window.location.href
       } #Starknet #StarknetID`
     )}`;
@@ -154,13 +154,13 @@ const ProfileCard: FunctionComponent<ProfileCardProps> = ({
             color='secondary'
             className={styles.accountCreationDate}
           >
-            {sinceDate ? `${sinceDate}` : ""}
+            {sinceDate ? `${sinceDate}` : ''}
           </Typography>
           <Typography
             type={TEXT_TYPE.H2}
             className={`${styles.profile_name} mt-2`}
           >
-            {identity.domain?.domain || "Unknown Domain"}
+            {identity.domain?.domain || 'Unknown Domain'}
           </Typography>
           <div className={styles.address_div}>
             <div className='flex items-center gap-2'>
@@ -170,7 +170,7 @@ const ProfileCard: FunctionComponent<ProfileCardProps> = ({
               >
                 {totalBalance !== null ? (
                   hidePortfolio ? (
-                    "******"
+                    '******'
                   ) : (
                     `$${totalBalance.toFixed(2)}`
                   )
@@ -254,7 +254,7 @@ const ProfileCard: FunctionComponent<ProfileCardProps> = ({
               >
                 {leaderboardData.position
                   ? rankFormatter(leaderboardData.position)
-                  : "NA"}
+                  : 'NA'}
               </Typography>
             </div>
           )}
@@ -271,7 +271,7 @@ const ProfileCard: FunctionComponent<ProfileCardProps> = ({
                 type={TEXT_TYPE.BODY_SMALL}
                 className={styles.statsText}
               >
-                {userXp ?? "0"}
+                {userXp ?? '0'}
               </Typography>
             </div>
           )}
